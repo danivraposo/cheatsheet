@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSP27 - Gerador Rápido de Hardening</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        h1, h2 { color: #0056b3; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: inline-block; width: 220px; }
+        input { padding: 6px 10px; width: 80px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 6px; overflow-x: auto; font-family: 'Consolas', monospace; }
+        button { background-color: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+
+    <h1>WSP27 — Gerador Dinâmico de Hardening</h1>
+
+    <!-- SEÇÃO WINDOWS / POWERSHELL -->
+    <div class="card">
+        <h2>1. Windows — Políticas Locais de Passwords & Bloqueio</h2>
+        <div class="form-group">
+            <label>Tamanho Mínimo Password:</label>
+            <input type="number" id="winMinLen" value="14" oninput="gerarWindows()">
+        </div>
+        <div class="form-group">
+            <label>Validade Máxima (Dias):</label>
+            <input type="number" id="winMaxAge" value="90" oninput="gerarWindows()">
+        </div>
+        <div class="form-group">
+            <label>Histórico de Passwords:</label>
+            <input type="number" id="winHistory" value="20" oninput="gerarWindows()">
+        </div>
+        <div class="form-group">
+            <label>Tentativas Bloqueio (Threshold):</label>
+            <input type="number" id="winLockout" value="5" oninput="gerarWindows()">
+        </div>
+        <div class="form-group">
+            <label>Duração Bloqueio (Minutos):</label>
+            <input type="number" id="winDuration" value="15" oninput="gerarWindows()">
+        </div>
+
+        <button onclick="copiar('codeWindows')">Copiar Comando PowerShell</button>
+        <pre id="codeWindows"></pre>
+    </div>
+
+    <!-- SEÇÃO LINUX / PAM -->
+    <div class="card">
+        <h2>2. Linux — PAM (/etc/security/pwquality.conf & faillock.conf)</h2>
+        <div class="form-group">
+            <label>Tamanho Mínimo Password:</label>
+            <input type="number" id="linMinLen" value="14" oninput="gerarLinux()">
+        </div>
+        <div class="form-group">
+            <label>Tentativas Bloqueio (deny):</label>
+            <input type="number" id="linDeny" value="5" oninput="gerarLinux()">
+        </div>
+        <div class="form-group">
+            <label>Duração Bloqueio (Segundos):</label>
+            <input type="number" id="linUnlock" value="900" oninput="gerarLinux()">
+        </div>
+
+        <button onclick="copiar('codePwQuality')">Copiar pwquality.conf</button>
+        <pre id="codePwQuality"></pre>
+
+        <button onclick="copiar('codeFailLock')">Copiar faillock.conf</button>
+        <pre id="codeFailLock"></pre>
+    </div>
+
+    <script>
+        function gerarWindows() {
+            const minLen = document.getElementById('winMinLen').value;
+            const maxAge = document.getElementById('winMaxAge').value;
+            const history = document.getElementById('winHistory').value;
+            const lockout = document.getElementById('winLockout').value;
+            const duration = document.getElementById('winDuration').value;
+
+            const cmd = `net accounts /minpwlen:${minLen} /maxpwage:${maxAge} /uniquepw:${history} /lockoutthreshold:${lockout} /lockoutduration:${duration} /lockoutwindow:${duration}`;
+            document.getElementById('codeWindows').innerText = cmd;
+        }
+
+        function gerarLinux() {
+            const minLen = document.getElementById('linMinLen').value;
+            const deny = document.getElementById('linDeny').value;
+            const unlock = document.getElementById('linUnlock').value;
+
+            document.getElementById('codePwQuality').innerText = `minlen = ${minLen}\nminclass = 3\nusercheck = 1`;
+            document.getElementById('codeFailLock').innerText = `deny = ${deny}\nunlock_time = ${unlock}\nfail_interval = ${unlock}`;
+        }
+
+        function copiar(elementId) {
+            const texto = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(texto);
+            alert("Comando/Configuração copiada para a área de transferência!");
+        }
+
+        // Inicializar na abertura
+        gerarWindows();
+        gerarLinux();
+    </script>
+</body>
+</html>
