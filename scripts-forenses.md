@@ -1,6 +1,6 @@
-[← Voltar ao Menu Principal](./README.md)
+[<- Voltar ao Menu Principal](./README.md)
 
-# 📜 Scripts Forenses & Triage Rápida
+# Scripts Forenses & Triage Rápida
 
 > **Atenção à Prova:** Os scripts desenvolvidos deverão ser guardados dentro de uma pasta chamada `scripts` no **Ambiente de Trabalho da máquina Windows**.
 
@@ -63,4 +63,3 @@ Para tornar executável no Linux:
 chmod +x inventory.sh
 ./inventory.sh
 ```
-

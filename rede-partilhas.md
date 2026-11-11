@@ -1,6 +1,6 @@
-[← Voltar ao Menu Principal](./README.md)
+[<- Voltar ao Menu Principal](./README.md)
 
-# 🌐 Partilhas de Rede & Permissões
+# Partilhas de Rede & Permissões
 
 ## 1. Servidor Samba no Linux (`/etc/samba/smb.conf`)
 
@@ -43,7 +43,7 @@ sudo systemctl restart smbd
 ### Configuração Passo a Passo (GUI)
 1. Clique direito na pasta > **Properties** > **Sharing** > **Advanced Sharing**.
 2. Marcar **Share this folder** > Clicar em **Permissions**:
-   * **public:** Adicionar `Authenticated Users` → Apenas Read.
+   * **public:** Adicionar `Authenticated Users` -> Apenas Read.
    * **private:** Adicionar `Jane` (Read) e `John` (Change/Read). Remover `Everyone`.
 3. Na aba **Security** (NTFS), aplicar exatamente as mesmas permissões para garantir que a permissão mais restritiva não bloqueia o acesso.
 
@@ -72,4 +72,3 @@ nslookup dc.wsp27.pt
 # Testar conectividade a uma porta
 nc -zv 192.168.27.20 80
 ```
-

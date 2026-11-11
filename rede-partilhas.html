@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partilhas de Rede & Permissoes - WSP27</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; line-height: 1.6; }
+        h1, h2, h3 { color: #0056b3; margin-top: 0; }
+        .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .nav-bar a { color: #0056b3; text-decoration: none; font-weight: 600; padding: 8px 14px; border-radius: 4px; transition: background 0.2s, color 0.2s; }
+        .nav-bar a:hover, .nav-bar a.active { background-color: #0056b3; color: white; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 6px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; }
+        button { background-color: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        button:hover { background-color: #218838; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .code-title { font-weight: bold; font-size: 14px; color: #555; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 6px; }
+        .file-path { background-color: #e9ecef; border: 1px solid #ced4da; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html">Menu Principal</a>
+        <a href="windows-hardening.html">Windows Hardening & GPO</a>
+        <a href="linux-hardening.html">Linux Hardening & Servicos</a>
+        <a href="rede-partilhas.html" class="active">Partilhas & Rede</a>
+        <a href="scripts-forenses.html">Scripts Forenses</a>
+    </nav>
+
+    <div class="card">
+        <h1>Partilhas de Rede & Permissoes</h1>
+        <p>Configuracao de servidores de partilha (Samba e Windows SMB), listas de controlo de acesso e diagnostico de rede.</p>
+    </div>
+
+    <!-- 1. SERVIDOR SAMBA -->
+    <div class="card">
+        <h2>1. Servidor Samba no Linux (/etc/samba/smb.conf)</h2>
+        
+        <h3>Pre-requisitos</h3>
+        <p>Instalacao do servico e criacao de credenciais Samba:</p>
+        <div class="code-header">
+            <span class="code-title">Instalacao e Senhas Samba</span>
+            <button onclick="copiarTexto('sudo apt install samba -y\nsudo smbpasswd -a Jane\nsudo smbpasswd -a John')">Copiar</button>
+        </div>
+        <pre>sudo apt install samba -y
+sudo smbpasswd -a Jane
+sudo smbpasswd -a John</pre>
+
+        <h3>Configuracao do Ficheiro (/etc/samba/smb.conf)</h3>
+        <p>Adicionar as definicoes de partilha ao final do ficheiro <span class="file-path">/etc/samba/smb.conf</span>:</p>
+
+        <div class="code-header">
+            <span class="code-title">Blocos public e private</span>
+            <button onclick="copiarTexto('[public]\n   path = /home/aluno/Desktop/public\n   read only = yes\n   guest ok = no\n   browseable = yes\n\n[private]\n   path = /home/aluno/Desktop/private\n   read only = no\n   valid users = Jane, John\n   read list = Jane\n   write list = John\n   browseable = yes')">Copiar</button>
+        </div>
+        <pre>[public]
+   path = /home/aluno/Desktop/public
+   read only = yes
+   guest ok = no
+   browseable = yes
+
+[private]
+   path = /home/aluno/Desktop/private
+   read only = no
+   valid users = Jane, John
+   read list = Jane
+   write list = John
+   browseable = yes</pre>
+
+        <p>Reiniciar servico Samba:</p>
+        <div class="code-header">
+            <span class="code-title">Reiniciar Daemon smbd</span>
+            <button onclick="copiarTexto('sudo systemctl restart smbd')">Copiar</button>
+        </div>
+        <pre>sudo systemctl restart smbd</pre>
+    </div>
+
+    <!-- 2. PARTILHAS WINDOWS -->
+    <div class="card">
+        <h2>2. Permissoes de Partilha no Windows (Share + NTFS)</h2>
+
+        <h3>Estrutura Exigida</h3>
+        <ul>
+            <li><strong>public:</strong> Todos os utilizadores autenticados apenas com permissao de leitura (Read).</li>
+            <li><strong>private:</strong> Jane com leitura (Read), John com leitura e escrita (Change), restantes utilizadores sem acesso.</li>
+        </ul>
+
+        <h3>Configuracao Passo a Passo (Interface Grafica)</h3>
+        <ol>
+            <li>Clique com o botao direito na pasta pretendida &gt; <strong>Properties</strong> &gt; <strong>Sharing</strong> &gt; <strong>Advanced Sharing</strong>.</li>
+            <li>Marque a opcao <strong>Share this folder</strong> &gt; Clique no botao <strong>Permissions</strong>:
+                <ul>
+                    <li><strong>public:</strong> Adicionar <code>Authenticated Users</code> &rarr; apenas marcar Read.</li>
+                    <li><strong>private:</strong> Adicionar <code>Jane</code> (Read) e <code>John</code> (Change e Read). Remover o grupo <code>Everyone</code>.</li>
+                </ul>
+            </li>
+            <li>Aceda ao separador <strong>Security</strong> (Permissoes NTFS) e configure exatamente as mesmas permissoes para que a regra mais restritiva nao bloqueie o acesso pretendido.</li>
+        </ol>
+    </div>
+
+    <!-- 3. DIAGNÓSTICO DE REDE -->
+    <div class="card">
+        <h2>3. Diagnostico e Testes de Conectividade de Rede</h2>
+
+        <h3>Windows (PowerShell)</h3>
+
+        <div class="code-header">
+            <span class="code-title">Verificar IP, Gateway e DNS</span>
+            <button onclick="copiarTexto('Get-NetIPConfiguration')">Copiar</button>
+        </div>
+        <pre>Get-NetIPConfiguration</pre>
+
+        <div class="code-header">
+            <span class="code-title">Testar Conexao a Porta Remota (ex: porta 80)</span>
+            <button onclick="copiarTexto('Test-NetConnection 192.168.27.20 -Port 80')">Copiar</button>
+        </div>
+        <pre>Test-NetConnection 192.168.27.20 -Port 80</pre>
+
+        <div class="code-header">
+            <span class="code-title">Listar Portas Locais em Escuta</span>
+            <button onclick="copiarTexto('Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess')">Copiar</button>
+        </div>
+        <pre>Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess</pre>
+
+        <h3>Linux (Bash)</h3>
+
+        <div class="code-header">
+            <span class="code-title">Listar Portas Abertas e Processos (ss)</span>
+            <button onclick="copiarTexto('ss -tulnp')">Copiar</button>
+        </div>
+        <pre>ss -tulnp</pre>
+
+        <div class="code-header">
+            <span class="code-title">Testar Resolucao DNS (nslookup)</span>
+            <button onclick="copiarTexto('nslookup dc.wsp27.pt')">Copiar</button>
+        </div>
+        <pre>nslookup dc.wsp27.pt</pre>
+
+        <div class="code-header">
+            <span class="code-title">Testar Conectividade a Porta via Netcat</span>
+            <button onclick="copiarTexto('nc -zv 192.168.27.20 80')">Copiar</button>
+        </div>
+        <pre>nc -zv 192.168.27.20 80</pre>
+    </div>
+
+    <script>
+        function copiarTexto(texto) {
+            navigator.clipboard.writeText(texto);
+            alert("Copiado para a area de transferencia!");
+        }
+    </script>
+</body>
+</html>
+

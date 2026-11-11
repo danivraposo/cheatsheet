@@ -1,38 +1,253 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WSP27 - Gerador Rápido de Hardening</title>
+    <title>WSP27 - Cyber Security Hub de Preparação</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
-        h1, h2 { color: #0056b3; }
-        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 15px; }
-        label { font-weight: bold; display: inline-block; width: 220px; }
-        input { padding: 6px 10px; width: 80px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-        pre { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 6px; overflow-x: auto; font-family: 'Consolas', monospace; }
-        button { background-color: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; }
-        button:hover { background-color: #218838; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+
+        .nav-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .nav-bar a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-bar a:hover,
+        .nav-bar a.active {
+            background-color: #0056b3;
+            color: white;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            display: inline-block;
+            width: 240px;
+        }
+
+        input {
+            padding: 6px 10px;
+            width: 90px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 13.5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .module-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            background: #fafafa;
+        }
+
+        .module-item h3 {
+            margin-bottom: 8px;
+        }
+
+        .module-item ul {
+            margin: 0;
+            padding-left: 20px;
+            font-size: 14px;
+        }
+
+        .module-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #0056b3;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .module-link:hover {
+            text-decoration: underline;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .code-title {
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+        }
     </style>
 </head>
+
 <body>
 
-    <h1>WSP27 — Gerador Dinâmico de Hardening</h1>
+    <nav class="nav-bar">
+        <a href="index.html" class="active">Menu Principal</a>
+        <a href="windows-hardening.html">Windows Hardening & GPO</a>
+        <a href="linux-hardening.html">Linux Hardening & Servicos</a>
+        <a href="rede-partilhas.html">Partilhas & Rede</a>
+        <a href="scripts-forenses.html">Scripts Forenses</a>
+    </nav>
 
-    <!-- SEÇÃO WINDOWS / POWERSHELL -->
     <div class="card">
-        <h2>1. Windows — Políticas Locais de Passwords & Bloqueio</h2>
+        <h1>WSP27 - Cyber Security Hub de Preparação</h1>
+        <p>Portal de consulta rápida e hardening para a prova regional da WorldSkills Portugal (Profissão 54 -
+            CyberSecurity).</p>
+    </div>
+
+    <!-- NAVEGAÇÃO DOS MÓDULOS -->
+    <div class="card">
+        <h2>Modulos de Consulta e Procedimentos</h2>
+        <div class="grid">
+            <div class="module-item">
+                <h3>Windows Hardening & GPO</h3>
+                <ul>
+                    <li>Politicas Locais de Passwords e Account Lockout</li>
+                    <li>Ativacao de Audit Policies (Event IDs 4625, 4720, 7045)</li>
+                    <li>RBAC, Grupos e Acessos Remotos (RDP / WinRM)</li>
+                </ul>
+                <a class="module-link" href="windows-hardening.html">Abrir Modulo Windows &rarr;</a>
+            </div>
+
+            <div class="module-item">
+                <h3>Linux Hardening & Servicos</h3>
+                <ul>
+                    <li>Modulos PAM (pwquality, faillock, pwhistory)</li>
+                    <li>Auditoria de Logs com rsyslog</li>
+                    <li>Controlo de Acesso SSH (sshd_config)</li>
+                </ul>
+                <a class="module-link" href="linux-hardening.html">Abrir Modulo Linux &rarr;</a>
+            </div>
+
+            <div class="module-item">
+                <h3>Partilhas de Rede & Permissoes</h3>
+                <ul>
+                    <li>Servidor Samba (smb.conf) com Read/Write por utilizador</li>
+                    <li>Permissoes de Partilha Windows (Share + NTFS)</li>
+                    <li>Diagnostico de Conectividade e Portas</li>
+                </ul>
+                <a class="module-link" href="rede-partilhas.html">Abrir Modulo Rede &rarr;</a>
+            </div>
+
+            <div class="module-item">
+                <h3>Scripts Forenses & Triage Rapida</h3>
+                <ul>
+                    <li>Script PowerShell (inventory.ps1) para evidencias</li>
+                    <li>Script Bash (inventory.sh) para conexoes e processos</li>
+                    <li>Localizacao padrao e regras de execucao</li>
+                </ul>
+                <a class="module-link" href="scripts-forenses.html">Abrir Modulo Forense &rarr;</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ATALHOS RÁPIDOS NA CONSOLA -->
+    <div class="card">
+        <h2>Atalhos Rapidos na Consola</h2>
+
+        <div class="code-header">
+            <span class="code-title">PowerShell Execution Policy Bypass</span>
+            <button onclick="copiarTexto('Set-ExecutionPolicy -Scope Process Bypass -Force')">Copiar</button>
+        </div>
+        <pre>Set-ExecutionPolicy -Scope Process Bypass -Force</pre>
+
+        <div class="code-header">
+            <span class="code-title">Reiniciar Servico Linux (systemd)</span>
+            <button onclick="copiarTexto('sudo systemctl restart <servico>')">Copiar</button>
+        </div>
+        <pre>sudo systemctl restart &lt;servico&gt;</pre>
+
+        <div class="code-header">
+            <span class="code-title">Validar Sintaxe de Configuracao SSH</span>
+            <button onclick="copiarTexto('sudo sshd -t')">Copiar</button>
+        </div>
+        <pre>sudo sshd -t</pre>
+    </div>
+
+    <!-- GERADOR DINÂMICO WINDOWS -->
+    <div class="card">
+        <h2>1. Gerador Dinamico Windows - Politicas Locais de Passwords & Bloqueio</h2>
         <div class="form-group">
-            <label>Tamanho Mínimo Password:</label>
+            <label>Tamanho Minimo Password:</label>
             <input type="number" id="winMinLen" value="14" oninput="gerarWindows()">
         </div>
         <div class="form-group">
-            <label>Validade Máxima (Dias):</label>
+            <label>Validade Maxima (Dias):</label>
             <input type="number" id="winMaxAge" value="90" oninput="gerarWindows()">
         </div>
         <div class="form-group">
-            <label>Histórico de Passwords:</label>
+            <label>Historico de Passwords:</label>
             <input type="number" id="winHistory" value="20" oninput="gerarWindows()">
         </div>
         <div class="form-group">
@@ -40,19 +255,19 @@
             <input type="number" id="winLockout" value="5" oninput="gerarWindows()">
         </div>
         <div class="form-group">
-            <label>Duração Bloqueio (Minutos):</label>
+            <label>Duracao Bloqueio (Minutos):</label>
             <input type="number" id="winDuration" value="15" oninput="gerarWindows()">
         </div>
 
-        <button onclick="copiar('codeWindows')">Copiar Comando PowerShell</button>
+        <button onclick="copiarId('codeWindows')">Copiar Comando PowerShell</button>
         <pre id="codeWindows"></pre>
     </div>
 
-    <!-- SEÇÃO LINUX / PAM -->
+    <!-- GERADOR DINÂMICO LINUX -->
     <div class="card">
-        <h2>2. Linux — PAM (/etc/security/pwquality.conf & faillock.conf)</h2>
+        <h2>2. Gerador Dinamico Linux - PAM (/etc/security/pwquality.conf & faillock.conf)</h2>
         <div class="form-group">
-            <label>Tamanho Mínimo Password:</label>
+            <label>Tamanho Minimo Password:</label>
             <input type="number" id="linMinLen" value="14" oninput="gerarLinux()">
         </div>
         <div class="form-group">
@@ -60,14 +275,14 @@
             <input type="number" id="linDeny" value="5" oninput="gerarLinux()">
         </div>
         <div class="form-group">
-            <label>Duração Bloqueio (Segundos):</label>
+            <label>Duracao Bloqueio (Segundos):</label>
             <input type="number" id="linUnlock" value="900" oninput="gerarLinux()">
         </div>
 
-        <button onclick="copiar('codePwQuality')">Copiar pwquality.conf</button>
+        <button onclick="copiarId('codePwQuality')">Copiar pwquality.conf</button>
         <pre id="codePwQuality"></pre>
 
-        <button onclick="copiar('codeFailLock')">Copiar faillock.conf</button>
+        <button onclick="copiarId('codeFailLock')">Copiar faillock.conf</button>
         <pre id="codeFailLock"></pre>
     </div>
 
@@ -92,15 +307,20 @@
             document.getElementById('codeFailLock').innerText = `deny = ${deny}\nunlock_time = ${unlock}\nfail_interval = ${unlock}`;
         }
 
-        function copiar(elementId) {
-            const texto = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(texto);
-            alert("Comando/Configuração copiada para a área de transferência!");
-        }
+            function copiarId(elementId) {
+                const texto = document.getElementById(elementId).innerText;
+                navigator.clipboard.writeText(texto);
+                alert("Copiado para a area de transferencia!");
+            }
 
-        // Inicializar na abertura
-        gerarWindows();
-        gerarLinux();
+            function copiarTexto(texto) {
+                navigator.clipboard.writeText(texto);
+                alert("Copiado para a area de transferencia!");
+            }
+
+            gerarWindows();
+            gerarLinux();
     </script>
 </body>
+
 </html>

@@ -1,6 +1,6 @@
-[← Voltar ao Menu Principal](./README.md)
+[<- Voltar ao Menu Principal](./README.md)
 
-# 🐧 Linux Hardening & Serviços
+# Linux Hardening & Serviços
 
 ## 1. Complexidade de Passwords (`/etc/security/pwquality.conf`)
 Editar o ficheiro com `sudo nano /etc/security/pwquality.conf`:
@@ -64,4 +64,3 @@ Validar sintaxe e reiniciar:
 ```bash
 sudo sshd -t && sudo systemctl restart ssh
 ```
-

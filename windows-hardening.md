@@ -1,6 +1,6 @@
-[← Voltar ao Menu Principal](./README.md)
+[<- Voltar ao Menu Principal](./README.md)
 
-# 🪟 Windows Hardening & GPO
+# Windows Hardening & GPO
 
 ## 1. Políticas de Passwords e Account Lockout (PowerShell Rápido)
 ```powershell
@@ -12,8 +12,8 @@ Set-ExecutionPolicy -Scope Process Bypass -Force
 ```
 
 ## 2. Consolas Gráficas de Gestão (GUI)
-* **Local Security Policy:** `Win + R` → `secpol.msc`
-* **Active Directory Group Policy (no DC):** `Win + R` → `gpmc.msc`
+* **Local Security Policy:** `Win + R` -> `secpol.msc`
+* **Active Directory Group Policy (no DC):** `Win + R` -> `gpmc.msc`
 
 ## 3. Navegação em Consola (secpol.msc)
 
@@ -32,9 +32,9 @@ Navegar para: `Security Settings` > `Account Policies` > `Account Lockout Policy
 
 ## 4. Auditoria e Logs do Windows (Advanced Audit Policy)
 Navegar para: `Security Settings` > `Advanced Audit Policy Configuration` > `System Audit Policies`
-* **Policy Change:** Audit Policy Change → Marcar Success e Failure
-* **Privilege Use:** Audit Sensitive Privilege Use → Marcar Success e Failure
-* **Detailed Tracking:** Audit Process Creation → Marcar Success e Failure
+* **Policy Change:** Audit Policy Change -> Marcar Success e Failure
+* **Privilege Use:** Audit Sensitive Privilege Use -> Marcar Success e Failure
+* **Detailed Tracking:** Audit Process Creation -> Marcar Success e Failure
 
 ### Consulta de Event IDs Úteis
 ```powershell
@@ -58,4 +58,3 @@ Add-LocalGroupMember -Group "Remote Desktop Users" -Member "Jane"
 Add-LocalGroupMember -Group "Remote Management Users" -Member "John"
 Add-LocalGroupMember -Group "Performance Monitor Users" -Member "Monitors"
 ```
-

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Hardening & Servicos - WSP27</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; line-height: 1.6; }
+        h1, h2, h3 { color: #0056b3; margin-top: 0; }
+        .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; background: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .nav-bar a { color: #0056b3; text-decoration: none; font-weight: 600; padding: 8px 14px; border-radius: 4px; transition: background 0.2s, color 0.2s; }
+        .nav-bar a:hover, .nav-bar a.active { background-color: #0056b3; color: white; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 6px; overflow-x: auto; font-family: 'Consolas', monospace; font-size: 13.5px; }
+        button { background-color: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        button:hover { background-color: #218838; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .code-title { font-weight: bold; font-size: 14px; color: #555; }
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 6px; }
+        .file-path { background-color: #e9ecef; border: 1px solid #ced4da; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html">Menu Principal</a>
+        <a href="windows-hardening.html">Windows Hardening & GPO</a>
+        <a href="linux-hardening.html" class="active">Linux Hardening & Servicos</a>
+        <a href="rede-partilhas.html">Partilhas & Rede</a>
+        <a href="scripts-forenses.html">Scripts Forenses</a>
+    </nav>
+
+    <div class="card">
+        <h1>Linux Hardening & Servicos</h1>
+        <p>Configuracoes do subsistema PAM, politicas de senhas, auditoria rsyslog e reforco do servico SSH.</p>
+    </div>
+
+    <!-- 1. COMPLEXIDADE DE PASSWORDS -->
+    <div class="card">
+        <h2>1. Complexidade de Passwords (/etc/security/pwquality.conf)</h2>
+        <p>Editar o ficheiro de configuracao com <span class="file-path">sudo nano /etc/security/pwquality.conf</span>:</p>
+
+        <div class="code-header">
+            <span class="code-title">Configuracao pwquality.conf</span>
+            <button onclick="copiarTexto('minlen = 14\nminclass = 3\nusercheck = 1')">Copiar</button>
+        </div>
+        <pre>minlen = 14
+minclass = 3
+usercheck = 1</pre>
+    </div>
+
+    <!-- 2. BLOQUEIO DE CONTAS -->
+    <div class="card">
+        <h2>2. Bloqueio de Contas (/etc/security/faillock.conf)</h2>
+        <p>Editar o ficheiro com <span class="file-path">sudo nano /etc/security/faillock.conf</span>:</p>
+
+        <div class="code-header">
+            <span class="code-title">Configuracao faillock.conf</span>
+            <button onclick="copiarTexto('deny = 5\nunlock_time = 900\nfail_interval = 900')">Copiar</button>
+        </div>
+        <pre>deny = 5
+unlock_time = 900
+fail_interval = 900</pre>
+        <p><em>(Valores definidos em segundos: 900s = 15 minutos)</em></p>
+    </div>
+
+    <!-- 3. VALIDADE E HISTÓRICO -->
+    <div class="card">
+        <h2>3. Validade e Historico de Passwords</h2>
+
+        <h3>Validade Maxima (90 Dias)</h3>
+        <p>Editar <span class="file-path">/etc/login.defs</span> e ajustar:</p>
+        <div class="code-header">
+            <span class="code-title">login.defs</span>
+            <button onclick="copiarTexto('PASS_MAX_DAYS   90')">Copiar</button>
+        </div>
+        <pre>PASS_MAX_DAYS   90</pre>
+
+        <p>Para aplicar imediatamente a um utilizador existente:</p>
+        <div class="code-header">
+            <span class="code-title">Comando chage</span>
+            <button onclick="copiarTexto('sudo chage -M 90 <utilizador>')">Copiar</button>
+        </div>
+        <pre>sudo chage -M 90 &lt;utilizador&gt;</pre>
+
+        <h3>Historico de Passwords (30 Passwords)</h3>
+        <p>Editar <span class="file-path">/etc/pam.d/common-password</span> e adicionar a linha do modulo <code>pam_pwhistory.so</code>:</p>
+        <div class="code-header">
+            <span class="code-title">Linha para common-password</span>
+            <button onclick="copiarTexto('password required pam_pwhistory.so remember=30 use_authtok')">Copiar</button>
+        </div>
+        <pre>password required pam_pwhistory.so remember=30 use_authtok</pre>
+    </div>
+
+    <!-- 4. AUDITORIA COM RSYSLOG -->
+    <div class="card">
+        <h2>4. Auditoria de Logs com Rsyslog (/etc/rsyslog.d/50-security.conf)</h2>
+        <p>Criar ou editar o ficheiro com <span class="file-path">sudo nano /etc/rsyslog.d/50-security.conf</span>:</p>
+
+        <div class="code-header">
+            <span class="code-title">Regras de Log de Seguranca</span>
+            <button onclick="copiarTexto('# Logs de cron jobs com prioridade exata warning\ncron.=warning    /var/log/cron_warn.log\n\n# Logs de users com prioridade igual ou superior a notice\nuser.notice      /var/log/user_filtered.log')">Copiar</button>
+        </div>
+        <pre># Logs de cron jobs com prioridade exata warning
+cron.=warning    /var/log/cron_warn.log
+
+# Logs de users com prioridade igual ou superior a notice
+user.notice      /var/log/user_filtered.log</pre>
+
+        <p>Validar e reiniciar o servico rsyslog:</p>
+        <div class="code-header">
+            <span class="code-title">Comandos de Reinicio do Servico</span>
+            <button onclick="copiarTexto('sudo systemctl restart rsyslog\nsudo systemctl status rsyslog')">Copiar</button>
+        </div>
+        <pre>sudo systemctl restart rsyslog
+sudo systemctl status rsyslog</pre>
+    </div>
+
+    <!-- 5. RESTRIÇÃO SSH -->
+    <div class="card">
+        <h2>5. Restricao de Acesso SSH (/etc/ssh/sshd_config)</h2>
+        <p>Editar com <span class="file-path">sudo nano /etc/ssh/sshd_config</span> e adicionar no final do ficheiro:</p>
+
+        <div class="code-header">
+            <span class="code-title">Regras de Acesso SSH</span>
+            <button onclick="copiarTexto('AllowUsers Jane\nAllowGroups Monitors')">Copiar</button>
+        </div>
+        <pre>AllowUsers Jane
+AllowGroups Monitors</pre>
+
+        <p>Validar sintaxe e reiniciar o servico com seguranca:</p>
+        <div class="code-header">
+            <span class="code-title">Validacao e Reinicio do SSH</span>
+            <button onclick="copiarTexto('sudo sshd -t && sudo systemctl restart ssh')">Copiar</button>
+        </div>
+        <pre>sudo sshd -t && sudo systemctl restart ssh</pre>
+    </div>
+
+    <script>
+        function copiarTexto(texto) {
+            navigator.clipboard.writeText(texto);
+            alert("Copiado para a area de transferencia!");
+        }
+    </script>
+</body>
+</html>
+
