@@ -1,326 +1,433 @@
-<!DOCTYPE html>
-<html lang="pt">
-
+<!doctype html>
+<html lang="pt-PT">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WSP27 - Cyber Security Hub de Preparação</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cheat sheet local de CyberSecurity para consulta rápida em laboratório.">
+    <title>WSP27 | CyberSecurity Lab Cheat Sheet</title>
     <style>
+        :root {
+            --bg: #f4f7fb;
+            --panel: #ffffff;
+            --ink: #172033;
+            --muted: #64748b;
+            --line: #e2e8f0;
+            --brand: #2563eb;
+            --brand-dark: #1d4ed8;
+            --code: #111827;
+            --success: #15803d;
+            --warning: #fff7ed;
+        }
 
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-            background-color: #f4f6f9;
-            color: #333;
-            line-height: 1.6;
-        }
-
-        h1,
-        h2,
-        h3 {
-            color: #0056b3;
-            margin-top: 0;
-        }
-
-        .nav-bar {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            background: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-
-        .nav-bar a {
-            color: #0056b3;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 14px;
-            border-radius: 4px;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .nav-bar a:hover,
-        .nav-bar a.active {
-            background-color: #0056b3;
-            color: white;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            font-weight: bold;
-            display: inline-block;
-            width: 240px;
-        }
-
-        input {
-            padding: 6px 10px;
-            width: 90px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        pre {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            font-family: 'Consolas', monospace;
-            font-size: 13.5px;
-        }
-
-        button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-top: 5px;
-        }
-
-        button:hover {
-            background-color: #218838;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .module-item {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 15px;
-            background: #fafafa;
-        }
-
-        .module-item h3 {
-            margin-bottom: 8px;
-        }
-
-        .module-item ul {
             margin: 0;
-            padding-left: 20px;
-            font-size: 14px;
+            background: var(--bg);
+            color: var(--ink);
+            font: 15px/1.6 "Segoe UI", system-ui, sans-serif;
         }
-
-        .module-link {
-            display: inline-block;
-            margin-top: 10px;
-            color: #0056b3;
-            font-weight: bold;
+        a { color: var(--brand); }
+        .layout { display: flex; min-height: 100vh; }
+        .sidebar {
+            position: sticky;
+            top: 0;
+            width: 270px;
+            height: 100vh;
+            flex: 0 0 270px;
+            padding: 28px 20px;
+            overflow-y: auto;
+            background: #0f172a;
+            color: #cbd5e1;
+        }
+        .brand { margin: 0 0 4px; color: #fff; font-size: 1.35rem; }
+        .subtitle { margin: 0 0 28px; color: #94a3b8; font-size: .85rem; }
+        .nav-title {
+            margin: 24px 0 8px;
+            color: #64748b;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+        .nav a {
+            display: block;
+            margin: 3px 0;
+            padding: 9px 11px;
+            border-radius: 7px;
+            color: #cbd5e1;
             text-decoration: none;
         }
-
-        .module-link:hover {
-            text-decoration: underline;
+        .nav a:hover, .nav a.active { background: #1e293b; color: #fff; }
+        .sidebar-note {
+            margin-top: 30px;
+            padding: 12px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #94a3b8;
+            font-size: .82rem;
         }
-
-        .code-header {
+        main { width: min(1050px, 100%); margin: 0 auto; padding: 32px 38px 70px; }
+        .topbar {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 30px;
         }
-
-        .code-title {
-            font-weight: bold;
-            font-size: 14px;
-            color: #555;
+        .topbar h1 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.4rem); letter-spacing: -.03em; }
+        .topbar p { margin: 5px 0 0; color: var(--muted); }
+        .search {
+            width: min(300px, 100%);
+            padding: 11px 14px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+            color: var(--ink);
+            font: inherit;
+        }
+        .hero, .card {
+            margin-bottom: 22px;
+            padding: 25px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--panel);
+            box-shadow: 0 4px 16px rgba(15, 23, 42, .04);
+        }
+        .hero { border: 0; background: linear-gradient(135deg, #1d4ed8, #0f172a); color: #fff; }
+        .hero h2 { margin: 0 0 8px; font-size: 1.65rem; }
+        .hero p { max-width: 720px; margin: 0; color: #dbeafe; }
+        .quick-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 22px; }
+        .quick-link {
+            display: block;
+            padding: 15px;
+            border: 1px solid var(--line);
+            border-radius: 9px;
+            background: #f8fafc;
+            color: var(--ink);
+            text-decoration: none;
+        }
+        .quick-link:hover { border-color: var(--brand); background: #eff6ff; }
+        .quick-link strong { display: block; color: var(--brand-dark); }
+        .section { scroll-margin-top: 20px; }
+        h2 { margin: 0 0 14px; font-size: 1.4rem; }
+        h3 { margin: 24px 0 8px; font-size: 1.05rem; }
+        p { margin: 8px 0 14px; }
+        ul, ol { padding-left: 22px; }
+        li { margin: 5px 0; }
+        code, .path { padding: 2px 6px; border-radius: 4px; background: #eef2ff; color: #3730a3; font-family: Consolas, monospace; font-size: .9em; }
+        .path { background: #f1f5f9; color: #334155; }
+        .notice { padding: 13px 15px; border-left: 4px solid #f59e0b; border-radius: 5px; background: var(--warning); color: #9a3412; }
+        .code-block { margin: 12px 0 18px; }
+        .code-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 5px; color: var(--muted); font-size: .82rem; font-weight: 700; }
+        pre {
+            margin: 0;
+            padding: 16px;
+            overflow-x: auto;
+            border-radius: 8px;
+            background: var(--code);
+            color: #e5e7eb;
+            font: 13px/1.55 Consolas, "Courier New", monospace;
+            white-space: pre-wrap;
+        }
+        button {
+            border: 0;
+            border-radius: 6px;
+            padding: 7px 11px;
+            background: var(--brand);
+            color: #fff;
+            cursor: pointer;
+            font: inherit;
+            font-size: .8rem;
+            font-weight: 700;
+        }
+        button:hover { background: var(--brand-dark); }
+        .generator { display: grid; grid-template-columns: minmax(220px, .7fr) 1fr; gap: 22px; align-items: start; }
+        .field { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 9px 0; }
+        .field label { color: var(--muted); font-size: .9rem; }
+        input[type="number"] { width: 78px; padding: 7px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+        .footer { margin-top: 35px; color: var(--muted); font-size: .85rem; text-align: center; }
+        .hidden { display: none !important; }
+        @media (max-width: 760px) {
+            .layout { display: block; }
+            .sidebar { position: static; width: auto; height: auto; padding: 18px; }
+            .nav { display: flex; flex-wrap: wrap; gap: 4px; }
+            .nav-title, .sidebar-note { display: none; }
+            .nav a { padding: 7px 9px; font-size: .9rem; }
+            main { padding: 22px 15px 50px; }
+            .topbar, .generator { display: block; }
+            .search { margin-top: 16px; }
+            .generator > div + div { margin-top: 20px; }
         }
     </style>
 </head>
-
 <body>
+<div class="layout">
+    <aside class="sidebar">
+        <h1 class="brand">WSP27</h1>
+        <p class="subtitle">CyberSecurity Lab Cheat Sheet</p>
+        <nav class="nav" aria-label="Navegação principal">
+            <div class="nav-title">Consulta</div>
+            <a href="#inicio">Início</a>
+            <a href="#windows">Windows & GPO</a>
+            <a href="#linux">Linux & Serviços</a>
+            <a href="#rede">Rede & Partilhas</a>
+            <a href="#forense">Scripts Forenses</a>
+            <div class="nav-title">Ferramentas</div>
+            <a href="#geradores">Geradores rápidos</a>
+        </nav>
+        <div class="sidebar-note">Funciona offline: abra este ficheiro diretamente no navegador durante o laboratório.</div>
+    </aside>
 
-    <nav class="nav-bar">
-        <a href="index.html" class="active">Menu Principal</a>
-        <a href="windows-hardening.html">Windows Hardening & GPO</a>
-        <a href="linux-hardening.html">Linux Hardening & Servicos</a>
-        <a href="rede-partilhas.html">Partilhas & Rede</a>
-        <a href="scripts-forenses.html">Scripts Forenses</a>
-    </nav>
-
-    <div class="card">
-        <h1>WSP27 - Cyber Security Hub de Preparação</h1>
-        <p>Portal de consulta rápida e hardening para a prova regional da WorldSkills Portugal (Profissão 54 -
-            CyberSecurity).</p>
-    </div>
-
-    <!-- NAVEGAÇÃO DOS MÓDULOS -->
-    <div class="card">
-        <h2>Modulos de Consulta e Procedimentos</h2>
-        <div class="grid">
-            <div class="module-item">
-                <h3>Windows Hardening & GPO</h3>
-                <ul>
-                    <li>Politicas Locais de Passwords e Account Lockout</li>
-                    <li>Ativacao de Audit Policies (Event IDs 4625, 4720, 7045)</li>
-                    <li>RBAC, Grupos e Acessos Remotos (RDP / WinRM)</li>
-                </ul>
-                <a class="module-link" href="windows-hardening.html">Abrir Modulo Windows &rarr;</a>
+    <main>
+        <header class="topbar">
+            <div>
+                <h1>Consulta rápida</h1>
+                <p>Procedimentos, comandos e configurações num único lugar.</p>
             </div>
+            <input id="search" class="search" type="search" placeholder="Pesquisar nesta página..." aria-label="Pesquisar">
+        </header>
 
-            <div class="module-item">
-                <h3>Linux Hardening & Servicos</h3>
-                <ul>
-                    <li>Modulos PAM (pwquality, faillock, pwhistory)</li>
-                    <li>Auditoria de Logs com rsyslog</li>
-                    <li>Controlo de Acesso SSH (sshd_config)</li>
-                </ul>
-                <a class="module-link" href="linux-hardening.html">Abrir Modulo Linux &rarr;</a>
+        <section id="inicio" class="hero section">
+            <h2>CyberSecurity Lab Cheat Sheet</h2>
+            <p>Guia de apoio para hardening, serviços, partilhas de rede e triagem forense na preparação da WorldSkills Portugal.</p>
+            <div class="quick-grid">
+                <a class="quick-link" href="#windows"><strong>Windows & GPO</strong>Políticas, auditoria, grupos e RDP.</a>
+                <a class="quick-link" href="#linux"><strong>Linux & Serviços</strong>PAM, logs e acesso SSH.</a>
+                <a class="quick-link" href="#rede"><strong>Rede & Partilhas</strong>Samba, NTFS e diagnóstico.</a>
+                <a class="quick-link" href="#forense"><strong>Scripts Forenses</strong>Inventário rápido em Windows e Linux.</a>
             </div>
+        </section>
 
-            <div class="module-item">
-                <h3>Partilhas de Rede & Permissoes</h3>
-                <ul>
-                    <li>Servidor Samba (smb.conf) com Read/Write por utilizador</li>
-                    <li>Permissoes de Partilha Windows (Share + NTFS)</li>
-                    <li>Diagnostico de Conectividade e Portas</li>
-                </ul>
-                <a class="module-link" href="rede-partilhas.html">Abrir Modulo Rede &rarr;</a>
+        <section id="geradores" class="card section searchable">
+            <h2>Geradores rápidos</h2>
+            <p>Altere os valores e copie a configuração gerada para o terminal.</p>
+            <div class="generator">
+                <div>
+                    <h3>Windows: política local</h3>
+                    <div class="field"><label for="winMinLen">Tamanho mínimo</label><input id="winMinLen" type="number" value="14" min="1"></div>
+                    <div class="field"><label for="winMaxAge">Validade (dias)</label><input id="winMaxAge" type="number" value="90" min="1"></div>
+                    <div class="field"><label for="winHistory">Histórico</label><input id="winHistory" type="number" value="20" min="0"></div>
+                    <div class="field"><label for="winLockout">Tentativas</label><input id="winLockout" type="number" value="5" min="1"></div>
+                    <div class="field"><label for="winDuration">Bloqueio (min.)</label><input id="winDuration" type="number" value="15" min="1"></div>
+                </div>
+                <div class="code-block">
+                    <div class="code-head"><span>net accounts</span><button data-copy="codeWindows">Copiar</button></div>
+                    <pre id="codeWindows"></pre>
+                </div>
             </div>
-
-            <div class="module-item">
-                <h3>Scripts Forenses & Triage Rapida</h3>
-                <ul>
-                    <li>Script PowerShell (inventory.ps1) para evidencias</li>
-                    <li>Script Bash (inventory.sh) para conexoes e processos</li>
-                    <li>Localizacao padrao e regras de execucao</li>
-                </ul>
-                <a class="module-link" href="scripts-forenses.html">Abrir Modulo Forense &rarr;</a>
+            <hr>
+            <div class="generator">
+                <div>
+                    <h3>Linux: PAM</h3>
+                    <div class="field"><label for="linMinLen">Tamanho mínimo</label><input id="linMinLen" type="number" value="14" min="1"></div>
+                    <div class="field"><label for="linDeny">Tentativas (deny)</label><input id="linDeny" type="number" value="5" min="1"></div>
+                    <div class="field"><label for="linUnlock">Bloqueio (seg.)</label><input id="linUnlock" type="number" value="900" min="1"></div>
+                </div>
+                <div>
+                    <div class="code-block">
+                        <div class="code-head"><span>pwquality.conf</span><button data-copy="codePwQuality">Copiar</button></div>
+                        <pre id="codePwQuality"></pre>
+                    </div>
+                    <div class="code-block">
+                        <div class="code-head"><span>faillock.conf</span><button data-copy="codeFailLock">Copiar</button></div>
+                        <pre id="codeFailLock"></pre>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- ATALHOS RÁPIDOS NA CONSOLA -->
-    <div class="card">
-        <h2>Atalhos Rapidos na Consola</h2>
+        <section id="windows" class="card section searchable">
+            <h2>Windows Hardening & GPO</h2>
+            <p>Políticas locais, auditoria avançada e gestão de acessos remotos.</p>
+            <h3>1. Passwords e Account Lockout</h3>
+            <div class="code-block"><div class="code-head"><span>PowerShell / CMD</span><button data-copy="winPolicy">Copiar</button></div><pre id="winPolicy">net accounts /minpwlen:14 /maxpwage:90 /uniquepw:20 /lockoutthreshold:5 /lockoutduration:15 /lockoutwindow:15</pre></div>
+            <div class="code-block"><div class="code-head"><span>Bypass temporário da política de execução</span><button data-copy="winBypass">Copiar</button></div><pre id="winBypass">Set-ExecutionPolicy -Scope Process Bypass -Force</pre></div>
+            <h3>2. Consolas e caminhos úteis</h3>
+            <ul>
+                <li><strong>Política de Segurança Local:</strong> <code>Win + R</code> → <code>secpol.msc</code></li>
+                <li><strong>Group Policy no Domain Controller:</strong> <code>Win + R</code> → <code>gpmc.msc</code></li>
+                <li><strong>Password Policy:</strong> Security Settings → Account Policies → Password Policy</li>
+                <li><strong>Account Lockout:</strong> Security Settings → Account Policies → Account Lockout Policy</li>
+            </ul>
+            <h3>3. Auditoria e Event IDs</h3>
+            <p>Em Advanced Audit Policy Configuration → System Audit Policies, ative Success e Failure para Policy Change, Sensitive Privilege Use e Process Creation.</p>
+            <div class="code-block"><div class="code-head"><span>Eventos relevantes</span><button data-copy="winEvents">Copiar</button></div><pre id="winEvents"># Tentativas de login falhadas
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4625}
 
-        <div class="code-header">
-            <span class="code-title">PowerShell Execution Policy Bypass</span>
-            <button onclick="copiarTexto('Set-ExecutionPolicy -Scope Process Bypass -Force')">Copiar</button>
-        </div>
-        <pre>Set-ExecutionPolicy -Scope Process Bypass -Force</pre>
+# Criação de utilizadores
+Get-WinEvent -FilterHashtable @{LogName='Security'; Id=4720}
 
-        <div class="code-header">
-            <span class="code-title">Reiniciar Servico Linux (systemd)</span>
-            <button onclick="copiarTexto('sudo systemctl restart <servico>')">Copiar</button>
-        </div>
-        <pre>sudo systemctl restart &lt;servico&gt;</pre>
+# Instalação de novos serviços
+Get-WinEvent -FilterHashtable @{LogName='System'; Id=7045}</pre></div>
+            <h3>4. RBAC, grupos e acessos</h3>
+            <div class="code-block"><div class="code-head"><span>Grupos locais</span><button data-copy="winRbac">Copiar</button></div><pre id="winRbac">New-LocalGroup -Name "Monitors"
+Add-LocalGroupMember -Group "Remote Desktop Users" -Member "Jane"
+Add-LocalGroupMember -Group "Remote Management Users" -Member "John"
+Add-LocalGroupMember -Group "Performance Monitor Users" -Member "Monitors"</pre></div>
+        </section>
 
-        <div class="code-header">
-            <span class="code-title">Validar Sintaxe de Configuracao SSH</span>
-            <button onclick="copiarTexto('sudo sshd -t')">Copiar</button>
-        </div>
-        <pre>sudo sshd -t</pre>
-    </div>
+        <section id="linux" class="card section searchable">
+            <h2>Linux Hardening & Serviços</h2>
+            <p>Configuração de PAM, validade de passwords, rsyslog e SSH.</p>
+            <h3>1. Complexidade de passwords <span class="path">/etc/security/pwquality.conf</span></h3>
+            <div class="code-block"><div class="code-head"><span>pwquality.conf</span><button data-copy="linuxPw">Copiar</button></div><pre id="linuxPw">minlen = 14
+minclass = 3
+usercheck = 1</pre></div>
+            <h3>2. Bloqueio de contas <span class="path">/etc/security/faillock.conf</span></h3>
+            <div class="code-block"><div class="code-head"><span>faillock.conf (segundos)</span><button data-copy="linuxFail">Copiar</button></div><pre id="linuxFail">deny = 5
+unlock_time = 900
+fail_interval = 900</pre></div>
+            <h3>3. Validade e histórico</h3>
+            <div class="code-block"><div class="code-head"><span>/etc/login.defs e utilizador existente</span><button data-copy="linuxAge">Copiar</button></div><pre id="linuxAge">PASS_MAX_DAYS   90
 
-    <!-- GERADOR DINÂMICO WINDOWS -->
-    <div class="card">
-        <h2>1. Gerador Dinamico Windows - Politicas Locais de Passwords & Bloqueio</h2>
-        <div class="form-group">
-            <label>Tamanho Minimo Password:</label>
-            <input type="number" id="winMinLen" value="14" oninput="gerarWindows()">
-        </div>
-        <div class="form-group">
-            <label>Validade Maxima (Dias):</label>
-            <input type="number" id="winMaxAge" value="90" oninput="gerarWindows()">
-        </div>
-        <div class="form-group">
-            <label>Historico de Passwords:</label>
-            <input type="number" id="winHistory" value="20" oninput="gerarWindows()">
-        </div>
-        <div class="form-group">
-            <label>Tentativas Bloqueio (Threshold):</label>
-            <input type="number" id="winLockout" value="5" oninput="gerarWindows()">
-        </div>
-        <div class="form-group">
-            <label>Duracao Bloqueio (Minutos):</label>
-            <input type="number" id="winDuration" value="15" oninput="gerarWindows()">
-        </div>
+sudo chage -M 90 &lt;utilizador&gt;</pre></div>
+            <div class="code-block"><div class="code-head"><span>/etc/pam.d/common-password</span><button data-copy="linuxHistory">Copiar</button></div><pre id="linuxHistory">password required pam_pwhistory.so remember=30 use_authtok</pre></div>
+            <h3>4. Auditoria com Rsyslog</h3>
+            <div class="code-block"><div class="code-head"><span>/etc/rsyslog.d/50-security.conf</span><button data-copy="linuxLogs">Copiar</button></div><pre id="linuxLogs">cron.=warning    /var/log/cron_warn.log
+user.notice      /var/log/user_filtered.log
 
-        <button onclick="copiarId('codeWindows')">Copiar Comando PowerShell</button>
-        <pre id="codeWindows"></pre>
-    </div>
+sudo systemctl restart rsyslog
+sudo systemctl status rsyslog</pre></div>
+            <h3>5. Restrição de acesso SSH</h3>
+            <div class="code-block"><div class="code-head"><span>/etc/ssh/sshd_config</span><button data-copy="linuxSsh">Copiar</button></div><pre id="linuxSsh">AllowUsers Jane
+AllowGroups Monitors
 
-    <!-- GERADOR DINÂMICO LINUX -->
-    <div class="card">
-        <h2>2. Gerador Dinamico Linux - PAM (/etc/security/pwquality.conf & faillock.conf)</h2>
-        <div class="form-group">
-            <label>Tamanho Minimo Password:</label>
-            <input type="number" id="linMinLen" value="14" oninput="gerarLinux()">
-        </div>
-        <div class="form-group">
-            <label>Tentativas Bloqueio (deny):</label>
-            <input type="number" id="linDeny" value="5" oninput="gerarLinux()">
-        </div>
-        <div class="form-group">
-            <label>Duracao Bloqueio (Segundos):</label>
-            <input type="number" id="linUnlock" value="900" oninput="gerarLinux()">
-        </div>
+sudo sshd -t
+sudo systemctl restart ssh</pre></div>
+        </section>
 
-        <button onclick="copiarId('codePwQuality')">Copiar pwquality.conf</button>
-        <pre id="codePwQuality"></pre>
+        <section id="rede" class="card section searchable">
+            <h2>Partilhas de Rede & Permissões</h2>
+            <p>Samba, partilhas Windows, permissões e testes de conectividade.</p>
+            <h3>1. Samba no Linux</h3>
+            <div class="code-block"><div class="code-head"><span>Instalação e credenciais</span><button data-copy="sambaInstall">Copiar</button></div><pre id="sambaInstall">sudo apt install samba -y
+sudo smbpasswd -a Jane
+sudo smbpasswd -a John</pre></div>
+            <div class="code-block"><div class="code-head"><span>/etc/samba/smb.conf</span><button data-copy="sambaConfig">Copiar</button></div><pre id="sambaConfig">[public]
+   path = /home/aluno/Desktop/public
+   read only = yes
+   guest ok = no
+   browseable = yes
 
-        <button onclick="copiarId('codeFailLock')">Copiar faillock.conf</button>
-        <pre id="codeFailLock"></pre>
-    </div>
+[private]
+   path = /home/aluno/Desktop/private
+   read only = no
+   valid users = Jane, John
+   read list = Jane
+   write list = John
+   browseable = yes
 
-    <script>
-        function gerarWindows() {
-            const minLen = document.getElementById('winMinLen').value;
-            const maxAge = document.getElementById('winMaxAge').value;
-            const history = document.getElementById('winHistory').value;
-            const lockout = document.getElementById('winLockout').value;
-            const duration = document.getElementById('winDuration').value;
+sudo systemctl restart smbd</pre></div>
+            <h3>2. Partilhas Windows: Share + NTFS</h3>
+            <ol>
+                <li>Botão direito na pasta → <strong>Properties</strong> → <strong>Sharing</strong> → <strong>Advanced Sharing</strong>.</li>
+                <li>Ative <strong>Share this folder</strong> e abra <strong>Permissions</strong>.</li>
+                <li><strong>public:</strong> <code>Authenticated Users</code> apenas com Read.</li>
+                <li><strong>private:</strong> Jane com Read, John com Change + Read; remova <code>Everyone</code>.</li>
+                <li>Na aba <strong>Security</strong>, replique as permissões no NTFS.</li>
+            </ol>
+            <h3>3. Diagnóstico de rede</h3>
+            <div class="code-block"><div class="code-head"><span>Windows / PowerShell</span><button data-copy="netWindows">Copiar</button></div><pre id="netWindows">Get-NetIPConfiguration
+Test-NetConnection 192.168.27.20 -Port 80
+Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess</pre></div>
+            <div class="code-block"><div class="code-head"><span>Linux / Bash</span><button data-copy="netLinux">Copiar</button></div><pre id="netLinux">ss -tulnp
+nslookup dc.wsp27.pt
+nc -zv 192.168.27.20 80</pre></div>
+        </section>
 
-            const cmd = `net accounts /minpwlen:${minLen} /maxpwage:${maxAge} /uniquepw:${history} /lockoutthreshold:${lockout} /lockoutduration:${duration} /lockoutwindow:${duration}`;
-            document.getElementById('codeWindows').innerText = cmd;
+        <section id="forense" class="card section searchable">
+            <h2>Scripts Forenses & Triage Rápida</h2>
+            <div class="notice"><strong>Atenção:</strong> guarde os scripts numa pasta <code>scripts</code> no Ambiente de Trabalho da máquina Windows: <span class="path">C:\Users\&lt;User&gt;\Desktop\scripts\</span>.</div>
+            <h3>1. PowerShell: <span class="path">inventory.ps1</span></h3>
+            <div class="code-block"><div class="code-head"><span>Windows triage</span><button data-copy="scriptPs">Copiar script</button></div><pre id="scriptPs"># =========================================================
+# Script Forense - Windows Triage (WorldSkills)
+# =========================================================
+
+Write-Host "=== 1. LISTA DE ADMINISTRADORES LOCAIS ===" -ForegroundColor Cyan
+Get-LocalGroupMember -Group "Administrators" | Select-Object Name, PrincipalSource
+
+Write-Host "`n=== 2. SESSÕES RDP ATIVAS ===" -ForegroundColor Cyan
+qwinsta
+
+Write-Host "`n=== 3. SERVIÇOS DO WINDOWS ===" -ForegroundColor Cyan
+Get-Service | Select-Object Name, DisplayName, Status, StartType</pre></div>
+            <div class="code-block"><div class="code-head"><span>Executar</span><button data-copy="runPs">Copiar</button></div><pre id="runPs">Set-ExecutionPolicy -Scope Process Bypass -Force
+.\inventory.ps1</pre></div>
+            <h3>2. Bash: <span class="path">inventory.sh</span></h3>
+            <div class="code-block"><div class="code-head"><span>Linux triage</span><button data-copy="scriptBash">Copiar script</button></div><pre id="scriptBash">#!/bin/bash
+
+# =========================================================
+# Script Forense - Linux Triage (WorldSkills)
+# =========================================================
+
+echo "================================================="
+echo "=== 1. CONTEÚDO DO FICHEIRO /etc/hosts ==="
+echo "================================================="
+cat /etc/hosts
+
+echo -e "\n================================================="
+echo "=== 2. PROCESSOS ATIVOS NO SISTEMA ==="
+echo "================================================="
+ps aux
+
+echo -e "\n================================================="
+echo "=== 3. CONEXÕES DE REDE ABERTAS E PORTAS ==="
+echo "================================================="
+ss -tulnp</pre></div>
+            <div class="code-block"><div class="code-head"><span>Executar no Linux</span><button data-copy="runBash">Copiar</button></div><pre id="runBash">chmod +x inventory.sh
+./inventory.sh</pre></div>
+        </section>
+
+        <p class="footer">WSP27 · Consulta local · Sem dependências externas</p>
+    </main>
+</div>
+<script>
+    const $ = id => document.getElementById(id);
+    const number = id => Math.max(0, Number($(id).value) || 0);
+
+    function updateGenerators() {
+        const minLen = number("winMinLen");
+        const maxAge = number("winMaxAge");
+        const history = number("winHistory");
+        const lockout = number("winLockout");
+        const duration = number("winDuration");
+        $("codeWindows").textContent = `net accounts /minpwlen:${minLen} /maxpwage:${maxAge} /uniquepw:${history} /lockoutthreshold:${lockout} /lockoutduration:${duration} /lockoutwindow:${duration}`;
+        const linuxMin = number("linMinLen");
+        const deny = number("linDeny");
+        const unlock = number("linUnlock");
+        $("codePwQuality").textContent = `minlen = ${linuxMin}\nminclass = 3\nusercheck = 1`;
+        $("codeFailLock").textContent = `deny = ${deny}\nunlock_time = ${unlock}\nfail_interval = ${unlock}`;
+    }
+
+    async function copyCode(id) {
+        const text = $(id).textContent;
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch {
+            const area = document.createElement("textarea");
+            area.value = text;
+            document.body.appendChild(area);
+            area.select();
+            document.execCommand("copy");
+            area.remove();
         }
+        const button = document.querySelector(`[data-copy="${id}"]`);
+        const original = button.textContent;
+        button.textContent = "Copiado";
+        button.style.background = "var(--success)";
+        setTimeout(() => { button.textContent = original; button.style.background = ""; }, 1200);
+    }
 
-        function gerarLinux() {
-            const minLen = document.getElementById('linMinLen').value;
-            const deny = document.getElementById('linDeny').value;
-            const unlock = document.getElementById('linUnlock').value;
-
-            document.getElementById('codePwQuality').innerText = `minlen = ${minLen}\nminclass = 3\nusercheck = 1`;
-            document.getElementById('codeFailLock').innerText = `deny = ${deny}\nunlock_time = ${unlock}\nfail_interval = ${unlock}`;
-        }
-
-            function copiarId(elementId) {
-                const texto = document.getElementById(elementId).innerText;
-                navigator.clipboard.writeText(texto);
-                alert("Copiado para a area de transferencia!");
-            }
-
-            function copiarTexto(texto) {
-                navigator.clipboard.writeText(texto);
-                alert("Copiado para a area de transferencia!");
-            }
-
-            gerarWindows();
-            gerarLinux();
-    </script>
+    document.querySelectorAll("input[type=number]").forEach(input => input.addEventListener("input", updateGenerators));
+    document.querySelectorAll("[data-copy]").forEach(button => button.addEventListener("click", () => copyCode(button.dataset.copy)));
+    $("search").addEventListener("input", event => {
+        const query = event.target.value.trim().toLowerCase();
+        document.querySelectorAll(".searchable").forEach(section => {
+            section.classList.toggle("hidden", query && !section.textContent.toLowerCase().includes(query));
+        });
+    });
+    updateGenerators();
+</script>
 </body>
-
 </html>
