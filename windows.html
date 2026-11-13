@@ -160,6 +160,84 @@ New-NetFirewallRule -DisplayName "HTTPS Inbound" -Direction Inbound -Protocol TC
         </div>
     </section>
 
+    <section class="card">
+        <h2>6. Firewall do Windows: pings (ICMP), portas e perfis</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'fw-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'fw-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="fw-cli" class="tab-content active">
+            <button type="button" onclick="copiar('codeFW', this)">Copiar comandos Firewall</button>
+            <pre id="codeFW"># 1. Permitir ping (ICMPv4 Echo Request)
+New-NetFirewallRule -DisplayName "Permitir Ping IPv4" -Direction Inbound -Protocol ICMPv4 -IcmpType 8 -Action Allow
+
+# 2. Bloquear ping, se o hardening de ICMP for necessário
+Set-NetFirewallRule -DisplayName "Permitir Ping IPv4" -Action Block
+
+# 3. Abrir portas comuns (RDP 3389 e SMB 445)
+New-NetFirewallRule -DisplayName "Permitir RDP" -Direction Inbound -Protocol TCP -LocalPort 3389 -Action Allow
+New-NetFirewallRule -DisplayName "Permitir SMB" -Direction Inbound -Protocol TCP -LocalPort 445 -Action Allow
+
+# 4. Ativar a Firewall nos três perfis
+Set-NetFirewallProfile -Profile Domain,Private,Public -Enabled True</pre>
+        </div>
+        <div id="fw-gui" class="tab-content">
+            <ol>
+                <li>Execute <code>wf.msc</code> para abrir Windows Defender Firewall with Advanced Security.</li>
+                <li>Em <strong>Inbound Rules</strong>, procure <em>File and Printer Sharing (Echo Request - ICMPv4-In)</em> e ative ou desative a regra.</li>
+                <li>Para criar uma regra de porta, escolha <strong>New Rule &gt; Port</strong>, indique o protocolo e a porta, permita a ligação e selecione os perfis.</li>
+                <li>Confirme que os perfis Domain, Private e Public estão ativos.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>7. FTP Hardening no IIS (WINSRV: porta 4021 e FTPS)</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'ftp-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'ftp-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="ftp-cli" class="tab-content active">
+            <button type="button" onclick="copiar('codeIISFTP', this)">Copiar comandos FTP e Firewall</button>
+            <pre id="codeIISFTP"># 1. Instalar FTP Server e criar certificado
+Install-WindowsFeature Web-Ftp-Server -IncludeManagementTools
+New-SelfSignedCertificate -DnsName "ftp.healthsec.pt" -CertStoreLocation "cert:\LocalMachine\My"
+
+# 2. Abrir porta 4021 na Firewall
+New-NetFirewallRule -DisplayName "FTPS Porta 4021" -Direction Inbound -Protocol TCP -LocalPort 4021 -Action Allow</pre>
+        </div>
+        <div id="ftp-gui" class="tab-content">
+            <ol>
+                <li>Abra <code>inetmgr</code>, clique com o botão direito em <strong>Sites &gt; Add FTP Site</strong> e defina a pasta física.</li>
+                <li>Em <strong>Binding</strong>, altere a porta para <code>4021</code>.</li>
+                <li>Em <strong>SSL</strong>, selecione <strong>Require SSL</strong> e o certificado criado.</li>
+                <li>Em <strong>Authentication</strong>, ative <em>Basic</em>, desative <em>Anonymous</em> e atribua as permissões necessárias.</li>
+                <li>Abra a porta TCP 4021 na Firewall através de <code>wf.msc</code>.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>8. Firewall do DC por IP específico</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'fwip-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'fwip-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="fwip-cli" class="tab-content active">
+            <button type="button" onclick="copiar('codeFWIP', this)">Copiar regras por IP</button>
+            <pre id="codeFWIP"># Substituir &lt;IP_LINSRV&gt; pelo IP real do Ubuntu
+New-NetFirewallRule -DisplayName "Permitir Ping de LINSRV" -Direction Inbound -Protocol ICMPv4 -IcmpType 8 -RemoteAddress "&lt;IP_LINSRV&gt;" -Action Allow
+New-NetFirewallRule -DisplayName "Bloquear Saida para LINSRV" -Direction Outbound -RemoteAddress "&lt;IP_LINSRV&gt;" -Action Block</pre>
+        </div>
+        <div id="fwip-gui" class="tab-content">
+            <ol>
+                <li>Abra <code>wf.msc</code>.</li>
+                <li>Em <strong>Inbound Rules &gt; New Rule &gt; Custom</strong>, selecione ICMPv4 e adicione apenas o IP do LINSRV em <strong>Scope</strong>.</li>
+                <li>Em <strong>Outbound Rules &gt; New Rule &gt; Custom</strong>, selecione todos os programas e bloqueie o IP do LINSRV em <strong>Scope</strong>.</li>
+            </ol>
+        </div>
+    </section>
+
     <script>
         function mudarAba(botao, idConteudo) {
             const card = botao.closest(".card");

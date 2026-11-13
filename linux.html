@@ -21,7 +21,8 @@ minclass = 3
 usercheck = 1</pre></section>
     <section class="card"><h2>2. Bloqueio e validade</h2><p><code>/etc/security/faillock.conf</code></p><button data-copy="faillock">Copiar</button><pre id="faillock">deny = 5
 unlock_time = 900
-fail_interval = 900</pre><p><code>/etc/login.defs</code> e validade de utilizadores:</p><pre id="passwordAge">PASS_MAX_DAYS   90
+fail_interval = 900
+even_deny_root</pre><p><code>/etc/login.defs</code> e validade de utilizadores:</p><pre id="passwordAge">PASS_MAX_DAYS   90
 
 sudo chage -M 90 &lt;utilizador&gt;
 sudo chage -W 14 &lt;utilizador&gt;</pre></section>
@@ -38,6 +39,48 @@ sudo systemctl restart ssh</pre></section>
 sudo apt install apache2 -y
 sudo systemctl enable --now apache2
 sudo ufw allow 80/tcp</pre></section>
+    <section class="card"><h2>5. Apache HTTPS, redirect HTTP para HTTPS e HSTS</h2><button data-copy="codeApacheSSL">Copiar comandos Apache SSL e HSTS</button><pre id="codeApacheSSL"># 1. Gerar certificado autoassinado e ativar módulos
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt -subj "/CN=healthsec.pt"
+sudo a2enmod ssl headers rewrite
+
+# 2. Configurar VirtualHost HTTPS em /etc/apache2/sites-available/default-ssl.conf
+# SSLEngine on
+# SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+# SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+# Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+# 3. Redirecionar HTTP em /etc/apache2/sites-available/000-default.conf
+# Redirect permanent / https://&lt;IP_OU_DOMINIO&gt;/
+sudo a2ensite default-ssl
+sudo apache2ctl configtest
+sudo systemctl restart apache2</pre></section>
+    <section class="card"><h2>6. FTP Hardening (vsftpd: porta 4021 e FTPS)</h2><button data-copy="codeVsftpd">Copiar configuração vsftpd.conf</button><pre id="codeVsftpd"># 1. Instalar e gerar certificado
+sudo apt install vsftpd -y
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem -subj "/CN=ftp.healthsec.pt"
+
+# 2. Adicionar ou editar em /etc/vsftpd.conf
+listen_port=4021
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+rsa_cert_file=/etc/ssl/private/vsftpd.pem
+rsa_private_key_file=/etc/ssl/private/vsftpd.pem
+ssl_enable=YES
+allow_anon_ssl=NO
+force_local_data_ssl=YES
+force_local_logins_ssl=YES
+ssl_tlsv1=YES
+ssl_sslv2=NO
+ssl_sslv3=NO
+
+sudo systemctl restart vsftpd</pre></section>
+    <section class="card"><h2>7. Firewall UFW</h2><button data-copy="codeUFW">Copiar regras UFW</button><pre id="codeUFW">sudo ufw allow ssh
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow 21/tcp
+sudo ufw allow 4021/tcp
+sudo ufw --force enable
+sudo ufw status verbose</pre></section>
     <script>
         document.querySelectorAll("[data-copy]").forEach(button => button.addEventListener("click", async () => {
             await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
