@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows, AD e IIS - WSP27</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 15px; background: #f4f6f9; color: #333; }
+        .card { padding: 20px; margin-bottom: 20px; border-left: 5px solid #0056b3; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        h1, h2 { color: #0056b3; margin-top: 0; }
+        label { display: inline-block; width: 230px; margin-bottom: 8px; font-weight: bold; }
+        input { width: 80px; padding: 5px 8px; border: 1px solid #ccc; border-radius: 4px; }
+        pre { margin-top: 10px; padding: 15px; overflow-x: auto; border-radius: 6px; background: #1e1e1e; color: #d4d4d4; font: 13px/1.5 Consolas, monospace; white-space: pre-wrap; }
+        button { padding: 8px 15px; border: 0; border-radius: 5px; background: #28a745; color: #fff; cursor: pointer; font-weight: bold; }
+        button:hover { background: #218838; }
+        .back { display: inline-block; margin-bottom: 20px; padding: 8px 15px; border-radius: 5px; background: #0056b3; color: #fff; text-decoration: none; font-weight: bold; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e0e0e0; }
+        .tab-btn { background: #e9ecef; color: #333; }
+        .tab-btn.active { background: #0056b3; color: #fff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        ol, ul { line-height: 1.6; }
+        code { padding: 2px 6px; border-radius: 4px; background: #eef1f5; color: #d63384; font-family: Consolas, monospace; }
+        @media (max-width: 600px) { .tabs { display: block; } .tab-btn { margin: 3px 0; } label { width: 100%; } }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">Voltar ao Menu Principal</a>
+    <h1>Windows, Active Directory e IIS</h1>
+
+    <section class="card">
+        <h2>1. Políticas locais de password e bloqueio</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'pol-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'pol-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="pol-cli" class="tab-content active">
+            <div><label for="winMinLen">Tamanho mínimo da password:</label><input type="number" id="winMinLen" value="14" min="1" oninput="gerar()"></div>
+            <div><label for="winMaxAge">Validade máxima (dias):</label><input type="number" id="winMaxAge" value="90" min="1" oninput="gerar()"></div>
+            <div><label for="winHistory">Histórico de passwords:</label><input type="number" id="winHistory" value="20" min="0" oninput="gerar()"></div>
+            <div><label for="winLockout">Tentativas até bloqueio:</label><input type="number" id="winLockout" value="5" min="1" oninput="gerar()"></div>
+            <div><label for="winDuration">Duração do bloqueio (minutos):</label><input type="number" id="winDuration" value="15" min="1" oninput="gerar()"></div>
+            <button type="button" onclick="copiar('codeWin', this)">Copiar comando PowerShell</button>
+            <pre id="codeWin"></pre>
+        </div>
+        <div id="pol-gui" class="tab-content">
+            <ol>
+                <li>Prima <code>Win + R</code>, escreva <code>secpol.msc</code> e carregue em Enter.</li>
+                <li>Expanda <strong>Security Settings &gt; Account Policies</strong>.</li>
+                <li>Em <strong>Password Policy</strong>, configure histórico, validade, tamanho mínimo e complexidade.</li>
+                <li>Em <strong>Account Lockout Policy</strong>, configure o limite, a duração e o período de reposição.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>2. Active Directory e políticas de domínio (GPO)</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'ad-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'ad-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="ad-cli" class="tab-content active">
+            <button type="button" onclick="copiar('codeAD', this)">Copiar comandos Active Directory</button>
+            <pre id="codeAD">Import-Module ActiveDirectory
+
+New-ADOrganizationalUnit -Name "HealthSec" -Path "DC=wsp27,DC=pt"
+New-ADGroup -Name "Monitors" -GroupScope Global -GroupCategory Security -Path "OU=HealthSec,DC=wsp27,DC=pt"
+
+$pw = Read-Host "Password inicial" -AsSecureString
+New-ADUser -Name "Jane" -SamAccountName "Jane" -UserPrincipalName "Jane@wsp27.pt" -Path "OU=HealthSec,DC=wsp27,DC=pt" -AccountPassword $pw -Enabled $true
+New-ADUser -Name "John" -SamAccountName "John" -UserPrincipalName "John@wsp27.pt" -Path "OU=HealthSec,DC=wsp27,DC=pt" -AccountPassword $pw -Enabled $true
+Add-ADGroupMember -Identity "Monitors" -Members "Jane"
+
+gpupdate /force</pre>
+        </div>
+        <div id="ad-gui" class="tab-content">
+            <h3>Criar utilizadores, grupos e OUs</h3>
+            <ol>
+                <li>Prima <code>Win + R</code> e execute <code>dsa.msc</code>.</li>
+                <li>No domínio <code>wsp27.pt</code>, use <strong>New &gt; Organizational Unit</strong>.</li>
+                <li>Dentro da OU, use <strong>New &gt; Group</strong> e <strong>New &gt; User</strong>.</li>
+                <li>No grupo, abra <strong>Members &gt; Add</strong> para adicionar utilizadores.</li>
+            </ol>
+            <h3>Configurar GPO</h3>
+            <ol>
+                <li>Execute <code>gpmc.msc</code> e abra <strong>Default Domain Policy &gt; Edit</strong>.</li>
+                <li>Navegue até <strong>Computer Configuration &gt; Policies &gt; Windows Settings &gt; Security Settings &gt; Account Policies</strong>.</li>
+                <li>Configure as políticas e execute <code>gpupdate /force</code>.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>3. Servidor Web IIS</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'iis-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'iis-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="iis-cli" class="tab-content active">
+            <button type="button" onclick="copiar('codeIIS', this)">Copiar comandos IIS</button>
+            <pre id="codeIIS">Install-WindowsFeature -Name Web-Server -IncludeManagementTools
+Start-Service W3SVC
+Set-Service W3SVC -StartupType Automatic
+New-NetFirewallRule -DisplayName "HTTP Inbound" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow</pre>
+        </div>
+        <div id="iis-gui" class="tab-content">
+            <ol>
+                <li>No <em>Server Manager</em>, abra <em>Add Roles and Features</em> e selecione <strong>Web Server (IIS)</strong>.</li>
+                <li>Execute <code>inetmgr</code> para abrir o IIS Manager.</li>
+                <li>Em <strong>Default Web Site</strong>, reveja Authentication, IP Address and Domain Restrictions e Directory Browsing.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>4. GPOs restritivas, bloqueio Admin e DNS (DC)</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'dc-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'dc-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="dc-cli" class="tab-content active">
+            <button type="button" onclick="copiar('codeDCExtra', this)">Copiar comandos DNS e verificação</button>
+            <pre id="codeDCExtra"># 1. Criar registo DNS (A) para intranet/portal
+Add-DnsServerResourceRecordA -Name "portal" -ZoneName "wsp27.pt" -IPv4Address "192.168.100.30"
+
+# 2. Forçar e verificar políticas aplicadas no cliente
+gpupdate /force
+gpresult /r</pre>
+        </div>
+        <div id="dc-gui" class="tab-content">
+            <ol>
+                <li><strong>Bloquear conta Administrador:</strong> abrir <code>gpmc.msc</code>, editar <em>Default Domain Policy</em> e ativar <em>Allow Administrator account lockout</em> em <em>Account Lockout Policy</em>.</li>
+                <li><strong>Bloquear Painel de Controlo:</strong> criar ou editar uma GPO ligada à OU e ativar <em>Prohibit access to Control Panel and PC settings</em> em <em>User Configuration &gt; Policies &gt; Administrative Templates &gt; Control Panel</em>.</li>
+                <li><strong>Bloquear Linha de Comandos:</strong> ativar <em>Prevent access to the command prompt</em> em <em>User Configuration &gt; Policies &gt; Administrative Templates &gt; System</em>.</li>
+                <li><strong>Criar registo DNS:</strong> executar <code>dnsmgmt.msc</code>, abrir <em>Forward Lookup Zones</em>, clicar no domínio e escolher <strong>New Host (A or AAAA)</strong>.</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>5. IIS avançado: HTTPS, redirect e HSTS</h2>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="mudarAba(this, 'iis-adv-cli')">Fazer em CLI (PowerShell)</button>
+            <button type="button" class="tab-btn" onclick="mudarAba(this, 'iis-adv-gui')">Fazer em interface gráfica (GUI)</button>
+        </div>
+        <div id="iis-adv-cli" class="tab-content active">
+            <button type="button" onclick="copiar('codeIISAdv', this)">Copiar comandos HTTPS e firewall</button>
+            <pre id="codeIISAdv"># 1. Criar certificado autoassinado
+New-SelfSignedCertificate -DnsName "wsp27.pt", "www.wsp27.pt" -CertStoreLocation "cert:\LocalMachine\My"
+
+# 2. Abrir porta 443 (HTTPS) na firewall
+New-NetFirewallRule -DisplayName "HTTPS Inbound" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow</pre>
+        </div>
+        <div id="iis-adv-gui" class="tab-content">
+            <ol>
+                <li><strong>Criar certificado:</strong> abrir <code>inetmgr</code>, selecionar o servidor, abrir <strong>Server Certificates</strong> e escolher <em>Create Self-Signed Certificate</em>.</li>
+                <li><strong>Ativar HTTPS:</strong> em <strong>Default Web Site &gt; Bindings</strong>, adicionar o tipo <code>https</code>, porta <code>443</code> e selecionar o certificado.</li>
+                <li><strong>Ativar HSTS:</strong> em <strong>Default Web Site &gt; HSTS</strong>, ativar, definir Max-Age como <code>31536000</code>, incluir subdomínios e redirecionar HTTP para HTTPS.</li>
+            </ol>
+        </div>
+    </section>
+
+    <script>
+        function mudarAba(botao, idConteudo) {
+            const card = botao.closest(".card");
+            card.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+            card.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
+            botao.classList.add("active");
+            document.getElementById(idConteudo).classList.add("active");
+        }
+
+        function gerar() {
+            const min = document.getElementById("winMinLen").value;
+            const age = document.getElementById("winMaxAge").value;
+            const hist = document.getElementById("winHistory").value;
+            const lock = document.getElementById("winLockout").value;
+            const dur = document.getElementById("winDuration").value;
+            document.getElementById("codeWin").textContent = `net accounts /minpwlen:${min} /maxpwage:${age} /uniquepw:${hist} /lockoutthreshold:${lock} /lockoutduration:${dur} /lockoutwindow:${dur}`;
+        }
+
+        async function copiar(id, botao) {
+            await navigator.clipboard.writeText(document.getElementById(id).textContent);
+            const original = botao.textContent;
+            botao.textContent = "Copiado";
+            setTimeout(() => { botao.textContent = original; }, 1200);
+        }
+
+        gerar();
+    </script>
+</body>
+</html>

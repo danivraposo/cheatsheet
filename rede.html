@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rede e Partilhas - WSP27</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 20px; background: #f4f6f9; color: #333; }
+        .card { padding: 20px; margin-bottom: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        h1, h2 { color: #d96b0b; } .back { display: inline-block; margin-bottom: 20px; padding: 8px 15px; border-radius: 5px; background: #0056b3; color: #fff; text-decoration: none; font-weight: bold; }
+        button { padding: 8px 15px; border: 0; border-radius: 4px; background: #fd7e14; color: #fff; cursor: pointer; font-weight: bold; }
+        pre { padding: 15px; overflow-x: auto; border-radius: 6px; background: #1e1e1e; color: #d4d4d4; font: 13px/1.5 Consolas, monospace; white-space: pre-wrap; }
+        li { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">Voltar ao Menu Principal</a>
+    <h1>Rede e Partilhas</h1>
+    <section class="card"><h2>1. Samba</h2><button data-copy="samba">Copiar comandos Samba</button><pre id="samba">sudo apt install samba -y
+sudo smbpasswd -a &lt;utilizador&gt;
+sudo systemctl enable --now smbd</pre><p><code>/etc/samba/smb.conf</code></p><button data-copy="config">Copiar configuração</button><pre id="config">[private]
+   path = /srv/samba/private
+   read only = no
+   valid users = &lt;utilizador&gt;
+   browseable = yes</pre></section>
+    <section class="card"><h2>2. Permissões Share e NTFS</h2><ol><li>Abra as propriedades da pasta, Sharing, Advanced Sharing e ative a partilha.</li><li>Em Share Permissions, atribua apenas o acesso necessário.</li><li>Na aba Security, replique a intenção no NTFS.</li><li>Remova grupos genéricos quando não forem necessários e valide com uma conta de teste.</li></ol></section>
+    <section class="card"><h2>3. Testes de rede</h2><button data-copy="windows">Copiar PowerShell</button><pre id="windows">Get-NetIPConfiguration
+Test-NetConnection 192.168.27.20 -Port 80
+Get-NetTCPConnection -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess</pre><button data-copy="linux">Copiar Bash</button><pre id="linux">ip addr
+ss -tulnp
+nc -zv 192.168.27.20 80
+nslookup dc.wsp27.pt</pre></section>
+    <script>
+        document.querySelectorAll("[data-copy]").forEach(button => button.addEventListener("click", async () => {
+            await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
+            const original = button.textContent; button.textContent = "Copiado";
+            setTimeout(() => { button.textContent = original; }, 1200);
+        }));
+    </script>
+</body>
+</html>

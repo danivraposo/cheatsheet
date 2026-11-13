@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scripts Forenses - WSP27</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 20px; background: #f4f6f9; color: #333; }
+        .card { padding: 20px; margin-bottom: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        h1, h2 { color: #6f42c1; } .back { display: inline-block; margin-bottom: 20px; padding: 8px 15px; border-radius: 5px; background: #0056b3; color: #fff; text-decoration: none; font-weight: bold; }
+        button { padding: 8px 15px; border: 0; border-radius: 4px; background: #6f42c1; color: #fff; cursor: pointer; font-weight: bold; }
+        pre { padding: 15px; overflow-x: auto; border-radius: 6px; background: #1e1e1e; color: #d4d4d4; font: 13px/1.5 Consolas, monospace; white-space: pre-wrap; }
+        .notice { padding: 12px; border-left: 4px solid #f59e0b; background: #fff7ed; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">Voltar ao Menu Principal</a>
+    <h1>Scripts Forenses</h1>
+    <p class="notice">Execute os scripts com as permissões adequadas e guarde os resultados numa pasta de evidências.</p>
+    <section class="card"><h2>1. PowerShell - inventário Windows</h2><button data-copy="powershell">Copiar script</button><pre id="powershell">Write-Host "=== ADMINISTRADORES LOCAIS ===" -ForegroundColor Cyan
+Get-LocalGroupMember -Group "Administrators" | Select-Object Name, PrincipalSource
+
+Write-Host "`n=== SESSÕES RDP ===" -ForegroundColor Cyan
+qwinsta
+
+Write-Host "`n=== SERVIÇOS ===" -ForegroundColor Cyan
+Get-Service | Select-Object Name, DisplayName, Status, StartType
+
+Write-Host "`n=== CONEXÕES ===" -ForegroundColor Cyan
+Get-NetTCPConnection | Select-Object LocalAddress, LocalPort, RemoteAddress, RemotePort, State</pre><p>Executar: <code>Set-ExecutionPolicy -Scope Process Bypass -Force; .\inventory.ps1</code></p></section>
+    <section class="card"><h2>2. Bash - inventário Linux</h2><button data-copy="bash">Copiar script</button><pre id="bash">#!/bin/bash
+set -u
+
+echo "=== HOSTS ==="
+cat /etc/hosts
+
+echo "=== PROCESSOS ==="
+ps aux
+
+echo "=== PORTAS E CONEXÕES ==="
+ss -tulnp
+
+echo "=== UTILIZADORES LIGADOS ==="
+who</pre><p>Executar: <code>chmod +x inventory.sh &amp;&amp; ./inventory.sh</code></p></section>
+    <script>
+        document.querySelectorAll("[data-copy]").forEach(button => button.addEventListener("click", async () => {
+            await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
+            const original = button.textContent; button.textContent = "Copiado";
+            setTimeout(() => { button.textContent = original; }, 1200);
+        }));
+    </script>
+</body>
+</html>

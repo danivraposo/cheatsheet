@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux, PAM e Apache - WSP27</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 20px; background: #f4f6f9; color: #333; }
+        .card { padding: 20px; margin-bottom: 20px; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        h1, h2 { color: #218838; } .back { display: inline-block; margin-bottom: 20px; padding: 8px 15px; border-radius: 5px; background: #0056b3; color: #fff; text-decoration: none; font-weight: bold; }
+        button { padding: 8px 15px; border: 0; border-radius: 4px; background: #28a745; color: #fff; cursor: pointer; font-weight: bold; }
+        pre { padding: 15px; overflow-x: auto; border-radius: 6px; background: #1e1e1e; color: #d4d4d4; font: 13px/1.5 Consolas, monospace; white-space: pre-wrap; }
+        code { color: #155724; } li { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">Voltar ao Menu Principal</a>
+    <h1>Linux, PAM e Apache</h1>
+    <section class="card"><h2>1. Complexidade PAM</h2><p><code>/etc/security/pwquality.conf</code></p><button data-copy="pwquality">Copiar</button><pre id="pwquality">minlen = 14
+minclass = 3
+usercheck = 1</pre></section>
+    <section class="card"><h2>2. Bloqueio e validade</h2><p><code>/etc/security/faillock.conf</code></p><button data-copy="faillock">Copiar</button><pre id="faillock">deny = 5
+unlock_time = 900
+fail_interval = 900</pre><p><code>/etc/login.defs</code> e validade de utilizadores:</p><pre id="passwordAge">PASS_MAX_DAYS   90
+
+sudo chage -M 90 &lt;utilizador&gt;
+sudo chage -W 14 &lt;utilizador&gt;</pre></section>
+    <section class="card"><h2>3. Rsyslog e SSH</h2><p><code>/etc/rsyslog.d/50-security.conf</code></p><button data-copy="logs">Copiar</button><pre id="logs">cron.=warning    /var/log/cron_warn.log
+user.notice      /var/log/user_filtered.log
+
+sudo systemctl restart rsyslog
+sudo systemctl status rsyslog</pre><p><code>/etc/ssh/sshd_config</code></p><button data-copy="ssh">Copiar</button><pre id="ssh">AllowUsers &lt;utilizador&gt;
+AllowGroups &lt;grupo&gt;
+
+sudo sshd -t
+sudo systemctl restart ssh</pre></section>
+    <section class="card"><h2>4. Apache</h2><button data-copy="apache">Copiar comandos Apache</button><pre id="apache">sudo apt update
+sudo apt install apache2 -y
+sudo systemctl enable --now apache2
+sudo ufw allow 80/tcp</pre></section>
+    <script>
+        document.querySelectorAll("[data-copy]").forEach(button => button.addEventListener("click", async () => {
+            await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);
+            const original = button.textContent; button.textContent = "Copiado";
+            setTimeout(() => { button.textContent = original; }, 1200);
+        }));
+    </script>
+</body>
+</html>
