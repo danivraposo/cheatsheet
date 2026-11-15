@@ -52,17 +52,69 @@
         .msg-author { font-weight: bold; font-size: 13px; margin-bottom: 6px; color: #0056b3; }
         .loading { display: none; padding: 12px; font-weight: bold; color: #0d6efd; }
         .loading.active { display: block; }
+        .infra-table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 8px; }
+        .infra-table th { background: #eef1f5; text-align: left; padding: 8px 12px; border-bottom: 2px solid #ced4da; }
+        .infra-table td { padding: 8px 12px; border-bottom: 1px solid #dee2e6; }
     </style>
 </head>
 <body>
     <a href="index.html" class="back">Voltar ao Menu Principal</a>
     <h1 class="gemini-title">Assistente Gemini - CyberSecurity &amp; Hardening</h1>
 
+    <!-- INFRAESTRUTURA DA PROVA -->
+    <section class="card gemini-card">
+        <h2>Infraestrutura do Concorrente (WorldSkills Portugal - Profissao 54)</h2>
+        <p>O assistente utiliza automaticamente os seguintes dados em todos os scripts, comandos, regras de firewall e configuracoes sem necessitar de confirmacao:</p>
+        <div style="overflow-x: auto;">
+            <table class="infra-table">
+                <thead>
+                    <tr>
+                        <th>Maquina / Papel</th>
+                        <th>Sistema Operativo &amp; Servicos</th>
+                        <th>IP</th>
+                        <th>Utilizador</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Workstation</strong></td>
+                        <td>Windows 10/11 Pro</td>
+                        <td><code>192.168.27.100</code></td>
+                        <td><code>concorrente</code></td>
+                        <td><code>wsp2027</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>DC (Domain Controller)</strong></td>
+                        <td>Windows Server 2022 (AD DS + DNS)</td>
+                        <td><code>192.168.27.10</code></td>
+                        <td><code>Administrator</code></td>
+                        <td><code>Wsp2027*</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>WINSRV</strong></td>
+                        <td>Windows Server 2022 (IIS Web/FTP + File Server)</td>
+                        <td><code>192.168.27.20</code></td>
+                        <td><code>Administrator</code></td>
+                        <td><code>Wsp2027*</code></td>
+                    </tr>
+                    <tr>
+                        <td><strong>LINSRV</strong></td>
+                        <td>Ubuntu Server 22.04 (Apache, vsftpd, Samba, SSH, Rsyslog)</td>
+                        <td><code>192.168.27.30</code> (eth0) + eth1 DHCP</td>
+                        <td><code>cyber</code></td>
+                        <td><code>wsp2027</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
     <!-- 1. CONFIGURAÇÃO DA CHAVE -->
     <section class="card gemini-card">
         <h2>1. Configuracao da Chave da API Gemini</h2>
         <div class="notice">
-            A chave e armazenada de forma segura unicamente no seu browser (localStorage) e utilizada para enviar os seus pedidos diretamente para a API oficial do Google Gemini.<br>
+            A chave e armazenada unicamente no seu browser (localStorage) e utilizada para enviar os seus pedidos diretamente para a API oficial do Google Gemini.<br>
             Pode obter uma chave gratuita no <strong>Google AI Studio</strong>:
             <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #084298; font-weight: bold;">Obter Chave API Gratuita no Google AI Studio</a>
         </div>
@@ -79,7 +131,6 @@
             <div style="flex: 2; min-width: 250px;">
                 <label for="modelSelect">Modelo Ativo:</label>
                 <select id="modelSelect">
-                    <!-- Modelos oficiais com limites da sua conta -->
                     <option value="gemini-3.1-flash-lite" selected>gemini-3.1-flash-lite (Recomendado - 500 pedidos/dia, muito rapido)</option>
                     <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (500 pedidos/dia)</option>
                     <option value="gemini-3.6-flash">gemini-3.6-flash (20 pedidos/dia)</option>
@@ -101,20 +152,20 @@
 
     <!-- 2. PROMPT / ENTRADA DE PEDIDOS -->
     <section class="card gemini-card">
-        <h2>2. O que pretende realizar?</h2>
-        <p>Peca ao Gemini qualquer script, configuracao de servico, comando de terminal, resolucao de problemas ou analise forense:</p>
+        <h2>2. Pedir Tarefa, Script ou Hardening</h2>
+        <p>Peca qualquer script, configuracao de servico, comando de terminal, resolucao de problemas ou auditoria forense:</p>
 
-        <label>Exemplos rapidos para teste:</label>
+        <label>Exemplos rapidos com a infraestrutura:</label>
         <div class="quick-tags">
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Cria um script PowerShell completo para inventario forense no Windows que exporte servicos instalados, administradores locais, portas ativas e logs de login falhados (4625).')">Inventario Forense PowerShell</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Como faco hardening rigoroso do SSH no Linux (/etc/ssh/sshd_config)? Apresenta os comandos exatos para desativar root, limitar utilizadores e validar a sintaxe.')">Hardening SSH Linux</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Explica passo a passo como configurar uma GPO no Active Directory para proibir o uso de portas USB de armazenamento.')">GPO Bloqueio de USB</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Gera uma configuracao completa do Samba (/etc/samba/smb.conf) com pasta public (leitura para todos) e private (leitura e escrita apenas para Jane e John).')">Samba smb.conf Seguro</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Escreve um script Bash para auditar todas as portas em escuta, conexoes ativas e utilizadores com shell /bin/bash no Linux.')">Auditoria de Portas Bash</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Hardening completo do servico SSH no LINSRV (192.168.27.30): permitir apenas o utilizador cyber, bloquear root, validar sintaxe com sshd -t e reiniciar o servico.')">Hardening SSH LINSRV</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Configura o faillock no LINSRV (192.168.27.30) para bloquear contas apos 5 tentativas durante 15 minutos (900 segundos) incluindo even_deny_root.')">PAM faillock LINSRV</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Cria uma GPO no DC (192.168.27.10) para aplicar politicas de password (14 caracteres, 90 dias, 20 historico) e account lockout (5 tentativas, 15 minutos). Inclui comando gpupdate /force.')">GPO Passwords no DC</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Configurar servidor Samba no LINSRV (192.168.27.30) com pasta public (leitura a todos) e private (leitura e escrita apenas para Jane e John). Validar com testparm.')">Samba Seguro no LINSRV</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Cria um script PowerShell para executar na Workstation (192.168.27.100) que teste a conectividade com as portas 80 e 21 do WINSRV (192.168.27.20), portas 53 e 389 do DC (192.168.27.10) e porta 22 do LINSRV (192.168.27.30).')">Script Diagnostico de Rede</button>
         </div>
 
-        <label for="userPrompt">Instrucao / Pergunta:</label>
-        <textarea id="userPrompt" placeholder="Escreva aqui tudo o que precisa. Exemplo: Cria uma regra de firewall iptables para bloquear conexoes na porta 22 exceto a partir do IP 192.168.1.50..."></textarea>
+        <label for="userPrompt">Instrucao / Pedido Tecnico:</label>
+        <textarea id="userPrompt" placeholder="Escreva aqui tudo o que precisa. Os IPs (192.168.27.x) e os utilizadores da prova serao automaticamente utilizados nos comandos e scripts gerados..."></textarea>
 
         <div style="display: flex; gap: 10px; margin-top: 12px;">
             <button type="button" class="btn-blue" id="btnSend" onclick="enviarPedido()">Executar Pedido</button>
@@ -126,13 +177,27 @@
 
     <!-- 3. HISTÓRICO / RESPOSTAS -->
     <section class="card gemini-card" id="chatSection" style="display: none;">
-        <h2>3. Resultados e Respostas</h2>
+        <h2>3. Resultados e Comandos Prontos a Executar</h2>
         <div id="chatHistory" class="chat-history"></div>
     </section>
 
     <script>
         const KEY_STORAGE = 'wsp27_gemini_key';
         let historicoConversa = [];
+
+        // Contexto permanente da infraestrutura WorldSkills Portugal
+        const SYSTEM_PROMPT = `Voce e um assistente especialista em CyberSecurity, Hardening de Sistemas Operativos (Windows e Linux), Redes, Forense e Administracao de Sistemas para a WorldSkills Portugal (Profissao 54).
+INFRAESTRUTURA DO CONCORRENTE (Use estes dados diretamente em todos os comandos, regras de firewall, DNS e scripts sem perguntar):
+- Workstation: Windows 10/11 Pro | IP: 192.168.27.100 | User: concorrente | Pass: wsp2027
+- DC (Domain Controller): Windows Server 2022 (AD DS + DNS) | IP: 192.168.27.10 | User: Administrator | Pass: Wsp2027*
+- WINSRV: Windows Server 2022 (IIS Web/FTP + File Server) | IP: 192.168.27.20 | User: Administrator | Pass: Wsp2027*
+- LINSRV: Ubuntu Server 22.04 (Apache, vsftpd, Samba, SSH, Rsyslog) | IP: 192.168.27.30 (eth0) + eth1 DHCP | User: cyber | Pass: wsp2027
+
+REGRAS DE RESPOSTA:
+1. Gere comandos e configuracoes prontos a copiar/colar ja preenchidos com os IPs (192.168.27.x) e utilizadores acima.
+2. Nunca utilize emojis.
+3. No Linux, lembre-se sempre de validar sintaxe (sshd -t, testparm, apache2ctl configtest) antes de reiniciar servicos, usar segundos no faillock (ex: 15 min = 900s) e incluir even_deny_root quando aplicavel.
+4. No Windows, lembre-se de usar minutos no lockout e gpupdate /force para aplicar GPOs.`;
 
         // Lista de modelos ordenados para fallback automatico se houver limite de taxa (429) ou modelo indisponivel (404/503)
         const MODEL_FALLBACK_LIST = [
@@ -298,21 +363,15 @@
             chatSection.style.display = 'block';
             fallbackNotice.style.display = 'none';
 
-            // Adicionar mensagem do utilizador
+            // Adicionar mensagem do utilizador a interface
             adicionarMensagem('Voce', prompt, 'msg-user');
             document.getElementById('userPrompt').value = '';
 
-            // Preparar estrutura para a API
+            // Se for a primeira mensagem da sessao, assegurar que o prompt de sistema tambem vai no corpo ou systemInstruction
             const novasMensagens = [...historicoConversa, {
                 role: 'user',
                 parts: [{ text: prompt }]
             }];
-
-            const systemInstruction = {
-                parts: [{
-                    text: "Voce e um assistente especialista em CyberSecurity, Hardening de Sistemas Operativos (Windows e Linux), Redes, Forense e Administracao de Sistemas para a WorldSkills Portugal. Realize rigorosamente tudo o que o utilizador pedir com respostas detalhadas, comandos funcionais prontos a executar, configuracoes exatas e explicacoes tecnicas precisas. Nunca utilize emojis nas suas respostas."
-                }]
-            };
 
             const modeloInicial = obterModeloAtual();
             // Criar lista de modelos a tentar caso o inicial falhe
@@ -326,15 +385,37 @@
                 const modeloAtual = filaModelos[i];
                 const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modeloAtual}:generateContent?key=${chave}`;
 
+                // Preparar payload com systemInstruction
+                const payload = {
+                    contents: novasMensagens,
+                    systemInstruction: {
+                        parts: [{ text: SYSTEM_PROMPT }]
+                    }
+                };
+
                 try {
-                    const res = await fetch(endpoint, {
+                    let res = await fetch(endpoint, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: novasMensagens,
-                            systemInstruction: systemInstruction
-                        })
+                        body: JSON.stringify(payload)
                     });
+
+                    // Caso o modelo nao aceite o campo systemInstruction (ex: modelos mais simples ou gemma retornam 400)
+                    if (res.status === 400) {
+                        const fallbackPayload = {
+                            contents: [
+                                {
+                                    role: 'user',
+                                    parts: [{ text: `[CONTEXTO DO SISTEMA E INFRAESTRUTURA]\n${SYSTEM_PROMPT}\n\n[PEDIDO DO UTILIZADOR]\n${prompt}` }]
+                                }
+                            ]
+                        };
+                        res = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(fallbackPayload)
+                        });
+                    }
 
                     if (res.ok) {
                         const data = await res.json();
@@ -346,12 +427,11 @@
                         }
                     }
 
-                    // Se falhou por limite de taxa (429), modelo indisponivel (404) ou erro de servico (503)
                     const erroJson = await res.json().catch(() => ({}));
                     const mensagemErro = erroJson.error?.message || res.statusText;
                     ultimoErro = `Modelo ${modeloAtual} falhou (${res.status}): ${mensagemErro}`;
 
-                    // Se for erro de quota (429), modelo descontinuado (404) ou servidor (503), tentar o proximo
+                    // Fallback se for limite de taxa (429), modelo nao encontrado (404) ou servidor (503)
                     if (res.status === 429 || res.status === 404 || res.status === 503) {
                         if (i + 1 < filaModelos.length) {
                             fallbackNotice.style.display = 'block';
@@ -359,7 +439,6 @@
                             continue;
                         }
                     } else {
-                        // Outro erro qualquer (ex: chave invalida 400/403)
                         break;
                     }
                 } catch (networkErr) {
