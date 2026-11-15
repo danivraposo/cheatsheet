@@ -1,534 +1,207 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistente</title>
+    <title>Assistente - WSP27</title>
     <style>
-        body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 15px;
-            background: #f4f6f9;
-            color: #333;
-        }
-
-        .card {
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 5px solid #0056b3;
-            border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
-        }
-
-        .card.gemini-card {
-            border-left-color: #0d6efd;
-        }
-
-        h1,
-        h2,
-        h3 {
-            color: #0056b3;
-            margin-top: 0;
-        }
-
-        .gemini-title {
-            color: #0d6efd;
-        }
-
-        .back {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 8px 15px;
-            border-radius: 5px;
-            background: #0056b3;
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .back:hover {
-            background: #004085;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        select,
-        textarea {
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 15px; background: #f4f6f9; color: #333; }
+        .card { padding: 18px; margin-bottom: 16px; border-left: 4px solid #0056b3; border-radius: 6px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        .card.discreet { border-left-color: #6c757d; }
+        .card.primary { border-left-color: #0d6efd; }
+        h1 { color: #0056b3; font-size: 22px; margin: 0 0 14px 0; }
+        h2 { color: #0056b3; font-size: 16px; margin: 0 0 10px 0; }
+        .back { display: inline-block; margin-bottom: 15px; padding: 6px 12px; border-radius: 4px; background: #0056b3; color: #fff; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .back:hover { background: #004085; }
+        
+        /* Formularios compactos */
+        label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: bold; color: #444; }
+        input[type="text"], input[type="password"], select, textarea {
             width: 100%;
-            padding: 9px 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
+            padding: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 13.5px;
             font-family: inherit;
             box-sizing: border-box;
         }
+        textarea { resize: vertical; min-height: 95px; line-height: 1.5; }
+        
+        .row-flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .row-flex input { flex: 1; min-width: 180px; }
+        
+        /* Botoes */
+        button { padding: 6px 12px; border: 0; border-radius: 4px; background: #28a745; color: #fff; cursor: pointer; font-size: 13px; font-weight: bold; transition: background .15s; }
+        button:hover { background: #218838; }
+        button.btn-blue { background: #0d6efd; }
+        button.btn-blue:hover { background: #0b5ed7; }
+        button.btn-secondary { background: #6c757d; }
+        button.btn-secondary:hover { background: #5a6268; }
+        button.btn-tag { background: #eef1f5; color: #0056b3; border: 1px solid #d0d7de; font-size: 12px; padding: 4px 8px; font-weight: 600; }
+        button.btn-tag:hover { background: #0056b3; color: #fff; }
+        button.btn-attach { background: #f8f9fa; color: #495057; border: 1px solid #ced4da; font-size: 12px; padding: 3px 8px; font-weight: normal; }
+        button.btn-attach:hover { background: #e2e6ea; }
 
-        textarea {
-            resize: vertical;
-            min-height: 110px;
-            line-height: 1.5;
-        }
+        /* Ficheiro discreto */
+        .file-pill { display: inline-flex; align-items: center; gap: 6px; background: #e7f1ff; border: 1px solid #b6d4fe; color: #084298; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+        .file-pill button { background: transparent; color: #dc3545; border: none; padding: 0 3px; font-size: 14px; cursor: pointer; font-weight: bold; }
+        .file-pill button:hover { background: transparent; color: #a71d2a; }
 
-        .row-flex {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
+        /* Details / Configuracao recolhivel */
+        details { background: #fff; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e0e0e0; }
+        details summary { padding: 10px 15px; cursor: pointer; font-size: 13.5px; font-weight: bold; color: #0056b3; user-select: none; }
+        details[open] summary { border-bottom: 1px solid #eee; }
+        .details-body { padding: 15px; }
 
-        .row-flex input {
-            flex: 1;
-            min-width: 200px;
-        }
+        .ip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 8px; }
+        .ip-item label { font-size: 12px; margin-bottom: 2px; }
+        .ip-item input { font-size: 12.5px; padding: 5px 8px; }
 
-        button {
-            padding: 8px 15px;
-            border: 0;
-            border-radius: 5px;
-            background: #28a745;
-            color: #fff;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background .15s;
-        }
+        .quick-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 12px 0; }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+        .badge-success { background: #d1e7dd; color: #0f5132; }
+        .badge-warning { background: #fff3cd; color: #664d03; }
 
-        button:hover {
-            background: #218838;
-        }
-
-        button.btn-blue {
-            background: #0d6efd;
-        }
-
-        button.btn-blue:hover {
-            background: #0b5ed7;
-        }
-
-        button.btn-secondary {
-            background: #6c757d;
-        }
-
-        button.btn-secondary:hover {
-            background: #5c636a;
-        }
-
-        button.btn-tag {
-            background: #eef1f5;
-            color: #0d6efd;
-            border: 1px solid #cfe2ff;
-            font-size: 12.5px;
-            padding: 5px 10px;
-            font-weight: 600;
-        }
-
-        button.btn-tag:hover {
-            background: #0d6efd;
-            color: #fff;
-        }
-
-        button.btn-danger {
-            background: #dc3545;
-        }
-
-        button.btn-danger:hover {
-            background: #bb2d3b;
-        }
-
-        .quick-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin: 10px 0 15px 0;
-        }
-
-        .notice {
-            padding: 12px 15px;
-            border-left: 4px solid #0d6efd;
-            background: #e7f1ff;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            font-size: 14px;
-            color: #084298;
-        }
-
-        .notice-warning {
-            padding: 10px 14px;
-            border-left: 4px solid #ffc107;
-            background: #fff3cd;
-            border-radius: 4px;
-            margin-top: 10px;
-            font-size: 13.5px;
-            color: #664d03;
-            display: none;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-success {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .badge-warning {
-            background: #fff3cd;
-            color: #664d03;
-        }
-
-        .badge-file {
-            background: #cfe2ff;
-            color: #084298;
-            border: 1px solid #9ec5fe;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            margin-bottom: 6px;
-            display: inline-block;
-        }
-
-        pre {
-            margin-top: 0;
-            padding: 15px;
-            overflow-x: auto;
-            border-radius: 0 0 6px 6px;
-            background: #1e1e1e;
-            color: #d4d4d4;
-            font: 13px/1.5 Consolas, monospace;
-            white-space: pre-wrap;
-            word-break: break-word;
-        }
-
-        .code-box {
-            margin: 15px 0;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid #2d2d2d;
-        }
-
-        .code-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #2d2d2d;
-            padding: 6px 12px;
-            color: #aaa;
-            font: 12px Consolas, monospace;
-        }
-
-        .code-bar button {
-            padding: 4px 10px;
-            font-size: 12px;
-            background: #198754;
-        }
-
-        .code-bar button:hover {
-            background: #157347;
-        }
-
-        code {
-            padding: 2px 6px;
-            border-radius: 4px;
-            background: #eef1f5;
-            color: #d63384;
-            font-family: Consolas, monospace;
-        }
-
-        .chat-history {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .msg {
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 14.5px;
-            line-height: 1.6;
-        }
-
-        .msg-user {
-            background: #e7f1ff;
-            border: 1px solid #b6d4fe;
-            align-self: flex-end;
-            width: 95%;
-        }
-
-        .msg-gemini {
-            background: #fff;
-            border: 1px solid #dee2e6;
-            width: 100%;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
-        }
-
-        .msg-author {
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 6px;
-            color: #0056b3;
-        }
-
-        .loading {
-            display: none;
-            padding: 12px;
-            font-weight: bold;
-            color: #0d6efd;
-        }
-
-        .loading.active {
-            display: block;
-        }
-
-        .infra-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13.5px;
-            margin-top: 8px;
-        }
-
-        .infra-table th {
-            background: #eef1f5;
-            text-align: left;
-            padding: 8px 12px;
-            border-bottom: 2px solid #ced4da;
-        }
-
-        .infra-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        /* Area de upload */
-        .upload-area {
-            border: 2px dashed #b6d4fe;
-            background: #f8faff;
-            border-radius: 8px;
-            padding: 18px;
-            text-align: center;
-            margin: 15px 0;
-            transition: border-color .2s, background-color .2s;
-        }
-
-        .upload-area.dragover {
-            border-color: #0d6efd;
-            background-color: #e7f1ff;
-        }
-
-        .file-info-bar {
-            display: none;
-            background: #e8f4fd;
-            border: 1px solid #b6d4fe;
-            border-radius: 6px;
-            padding: 10px 15px;
-            align-items: center;
-            justify-content: space-between;
-            margin: 12px 0;
-            font-size: 13.5px;
-        }
-
-        .file-info-bar.active {
-            display: flex;
-        }
+        /* Codigo e mensagens */
+        pre { margin-top: 0; padding: 12px; overflow-x: auto; border-radius: 0 0 5px 5px; background: #1e1e1e; color: #d4d4d4; font: 12.5px/1.5 Consolas, monospace; white-space: pre-wrap; word-break: break-word; }
+        .code-box { margin: 12px 0; border-radius: 5px; overflow: hidden; border: 1px solid #2d2d2d; }
+        .code-bar { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 5px 10px; color: #aaa; font: 11px Consolas, monospace; }
+        .code-bar button { padding: 3px 8px; font-size: 11px; background: #198754; }
+        code { padding: 2px 5px; border-radius: 3px; background: #eef1f5; color: #d63384; font-family: Consolas, monospace; font-size: 12.5px; }
+        
+        .chat-history { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+        .msg { padding: 12px 15px; border-radius: 6px; font-size: 14px; line-height: 1.5; }
+        .msg-user { background: #f0f4f8; border: 1px solid #d0dbe5; align-self: flex-end; width: 95%; }
+        .msg-gemini { background: #fff; border: 1px solid #dee2e6; width: 100%; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+        .msg-author { font-weight: bold; font-size: 12px; margin-bottom: 4px; color: #0056b3; }
+        .loading { display: none; padding: 8px 0; font-size: 13px; font-weight: bold; color: #0d6efd; }
+        .loading.active { display: block; }
+        .notice-warning { padding: 8px 12px; border-left: 3px solid #ffc107; background: #fff3cd; border-radius: 3px; margin-top: 8px; font-size: 12px; color: #664d03; display: none; }
     </style>
 </head>
-
 <body>
     <a href="index.html" class="back">Voltar ao Menu Principal</a>
-    <h1 class="gemini-title">Assistente Gemini - CyberSecurity &amp; Hardening</h1>
+    <h1>Assistente Tecnico - CyberSecurity</h1>
 
-    <!-- INFRAESTRUTURA DA PROVA -->
-    <section class="card gemini-card">
-        <h2>Infraestrutura do Concorrente (WorldSkills Portugal - Profissao 54)</h2>
-        <p>O assistente utiliza automaticamente os seguintes dados em todos os scripts, comandos, regras de firewall e
-            configuracoes sem necessitar de confirmacao:</p>
-        <div style="overflow-x: auto;">
-            <table class="infra-table">
-                <thead>
-                    <tr>
-                        <th>Maquina / Papel</th>
-                        <th>Sistema Operativo &amp; Servicos</th>
-                        <th>IP</th>
-                        <th>Utilizador</th>
-                        <th>Password</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>Workstation</strong></td>
-                        <td>Windows 10/11 Pro</td>
-                        <td><code>192.168.27.100</code></td>
-                        <td><code>concorrente</code></td>
-                        <td><code>wsp2027</code></td>
-                    </tr>
-                    <tr>
-                        <td><strong>DC (Domain Controller)</strong></td>
-                        <td>Windows Server 2022 (AD DS + DNS)</td>
-                        <td><code>192.168.27.10</code></td>
-                        <td><code>Administrator</code></td>
-                        <td><code>Wsp2027*</code></td>
-                    </tr>
-                    <tr>
-                        <td><strong>WINSRV</strong></td>
-                        <td>Windows Server 2022 (IIS Web/FTP + File Server)</td>
-                        <td><code>192.168.27.20</code></td>
-                        <td><code>Administrator</code></td>
-                        <td><code>Wsp2027*</code></td>
-                    </tr>
-                    <tr>
-                        <td><strong>LINSRV</strong></td>
-                        <td>Ubuntu Server 22.04 (Apache, vsftpd, Samba, SSH, Rsyslog)</td>
-                        <td><code>192.168.27.30</code> (eth0) + eth1 DHCP</td>
-                        <td><code>cyber</code></td>
-                        <td><code>wsp2027</code></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </section>
-
-    <!-- 1. CONFIGURAÇÃO DA CHAVE -->
-    <section class="card gemini-card">
-        <h2>1. Configuracao da Chave da API Gemini</h2>
-        <div class="notice">
-            A chave e armazenada unicamente no seu browser (localStorage) e utilizada para enviar os seus pedidos
-            diretamente para a API oficial do Google Gemini.<br>
-            Pode obter uma chave gratuita no <strong>Google AI Studio</strong>:
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer"
-                style="color: #084298; font-weight: bold;">Obter Chave API Gratuita no Google AI Studio</a>
-        </div>
-
-        <label for="apiKey">Gemini API Key:</label>
-        <div class="row-flex">
-            <input type="password" id="apiKey" placeholder="Cole aqui a sua API Key (ex: AIzaSy...)">
-            <button type="button" class="btn-secondary" onclick="alternarVisibilidade()">Mostrar/Ocultar</button>
-            <button type="button" onclick="salvarChave()">Guardar Chave</button>
-            <button type="button" class="btn-secondary" onclick="limparChave()">Remover</button>
-        </div>
-
-        <div class="row-flex" style="margin-bottom: 0;">
-            <div style="flex: 2; min-width: 250px;">
-                <label for="modelSelect">Modelo Ativo:</label>
-                <select id="modelSelect">
-                    <option value="gemini-3.1-flash-lite" selected>gemini-3.1-flash-lite (Recomendado - 500 pedidos/dia,
-                        muito rapido)</option>
-                    <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (500 pedidos/dia)</option>
-                    <option value="gemini-3.6-flash">gemini-3.6-flash (20 pedidos/dia)</option>
-                    <option value="gemini-3-flash">gemini-3-flash (20 pedidos/dia)</option>
-                    <option value="gemini-3.8-flash">gemini-3.8-flash (20 pedidos/dia - atencao a quota)</option>
-                    <option value="gemini-4-hydrogen">gemini-4-hydrogen (Nova geracao)</option>
-                    <option value="gemma-4-26b">gemma-4-26b (14.400 pedidos/dia)</option>
-                    <option value="custom">Outro modelo personalizado...</option>
-                </select>
-                <input type="text" id="customModelInput" placeholder="Nome do modelo (ex: gemini-3.1-flash)"
-                    style="display:none; margin-top:8px;">
+    <!-- PAINEL RECOLHÍVEL DE DEFINIÇÃO DE IPS & REDE -->
+    <details id="detailsInfra">
+        <summary>Configuracao de Rede e IPs da Prova (Clique para editar)</summary>
+        <div class="details-body">
+            <p style="margin-top: 0; font-size: 12.5px; color: #555;">Os comandos e scripts gerados utilizam diretamente os seguintes enderecos IP:</p>
+            <div class="ip-grid">
+                <div class="ip-item">
+                    <label for="ipWS">Workstation (Win 10/11):</label>
+                    <input type="text" id="ipWS" value="192.168.27.100">
+                </div>
+                <div class="ip-item">
+                    <label for="ipDC">DC (Domain Controller):</label>
+                    <input type="text" id="ipDC" value="192.168.27.10">
+                </div>
+                <div class="ip-item">
+                    <label for="ipWINSRV">WINSRV (IIS/FTP Server):</label>
+                    <input type="text" id="ipWINSRV" value="192.168.27.20">
+                </div>
+                <div class="ip-item">
+                    <label for="ipLINSRV">LINSRV (Ubuntu Server):</label>
+                    <input type="text" id="ipLINSRV" value="192.168.27.30">
+                </div>
             </div>
-            <div style="padding-top: 25px; display: flex; gap: 8px; align-items: center;">
-                <button type="button" class="btn-tag" onclick="carregarModelosDisponiveis()">Atualizar Modelos da
-                    Chave</button>
-                <span id="keyBadge" class="badge badge-warning">Nenhuma chave configurada</span>
+            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                <button type="button" onclick="guardarIPs()">Guardar IPs</button>
+                <button type="button" class="btn-secondary" onclick="reporIPsPadrao()">Repor Padroes</button>
+                <span id="savedIpNotice" style="display:none; font-size: 12px; color: #198754; align-self: center; font-weight: bold;">IPs atualizados com sucesso!</span>
             </div>
         </div>
-        <div id="fallbackNotice" class="notice-warning"></div>
-    </section>
+    </details>
 
-    <!-- 2. PROMPT / ENTRADA DE PEDIDOS & CARREGAMENTO DE PDF -->
-    <section class="card gemini-card">
-        <h2>2. Carregar Enunciado (PDF) ou Pedir Tarefa</h2>
-        <p>Pode carregar o PDF do guiao da prova para o Gemini ler na integra e resolver, ou escrever diretamente uma
-            solicitacao:</p>
-
-        <!-- ZONA DE CARREGAMENTO DE FICHEIROS / PDF -->
-        <label>Anexar Documento da Prova (PDF, TXT ou LOG):</label>
-        <div class="upload-area" id="dropZone">
-            <input type="file" id="fileInput" accept=".pdf,application/pdf,.txt,.log" style="display:none;"
-                onchange="tratarSelecaoFicheiro(event)">
-            <p style="margin: 0 0 10px 0; color: #555;">Arraste e solte o ficheiro PDF do enunciado aqui ou</p>
-            <button type="button" class="btn-tag" onclick="document.getElementById('fileInput').click()"
-                style="padding: 8px 16px; font-size: 13.5px;">Selecionar Ficheiro PDF / Enunciado</button>
-        </div>
-
-        <div id="fileInfoBar" class="file-info-bar">
-            <div>
-                <strong>Ficheiro Carregado:</strong> <span id="fileNameDisplay" style="color: #0056b3;"></span>
-                <span id="fileSizeDisplay" style="color: #666; font-size: 12px; margin-left: 8px;"></span>
+    <!-- PAINEL RECOLHÍVEL DE CONFIGURAÇÃO DA CHAVE & MODELO -->
+    <details id="detailsKey">
+        <summary>Configuracao da API Gemini (Chave e Modelo)</summary>
+        <div class="details-body">
+            <label for="apiKey">Gemini API Key:</label>
+            <div class="row-flex" style="margin-bottom: 10px;">
+                <input type="password" id="apiKey" placeholder="Cole aqui a sua API Key (ex: AIzaSy...)">
+                <button type="button" class="btn-secondary" onclick="alternarVisibilidade()">Mostrar/Ocultar</button>
+                <button type="button" onclick="salvarChave()">Guardar Chave</button>
+                <button type="button" class="btn-secondary" onclick="limparChave()">Remover</button>
             </div>
-            <button type="button" class="btn-danger" style="padding: 4px 10px; font-size: 12px;"
-                onclick="removerFicheiro()">Remover</button>
+            <div class="row-flex" style="margin-bottom: 0;">
+                <div style="flex: 2; min-width: 220px;">
+                    <label for="modelSelect">Modelo:</label>
+                    <select id="modelSelect">
+                        <option value="gemini-3.1-flash-lite" selected>gemini-3.1-flash-lite (Recomendado - 500 pedidos/dia)</option>
+                        <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (500 pedidos/dia)</option>
+                        <option value="gemini-3.6-flash">gemini-3.6-flash (20 pedidos/dia)</option>
+                        <option value="gemini-3-flash">gemini-3-flash (20 pedidos/dia)</option>
+                        <option value="gemini-3.8-flash">gemini-3.8-flash (20 pedidos/dia)</option>
+                        <option value="gemini-4-hydrogen">gemini-4-hydrogen</option>
+                        <option value="gemma-4-26b">gemma-4-26b (14.400 pedidos/dia)</option>
+                        <option value="custom">Outro modelo...</option>
+                    </select>
+                    <input type="text" id="customModelInput" placeholder="Nome do modelo" style="display:none; margin-top:6px;">
+                </div>
+                <div style="padding-top: 20px; display: flex; gap: 6px; align-items: center;">
+                    <button type="button" class="btn-tag" onclick="carregarModelosDisponiveis()">Ler Modelos da Chave</button>
+                    <span id="keyBadge" class="badge badge-warning">Sem chave</span>
+                </div>
+            </div>
+            <div id="fallbackNotice" class="notice-warning"></div>
+        </div>
+    </details>
+
+    <!-- ÁREA PRINCIPAL DE PEDIDOS / COMANDOS -->
+    <section class="card primary">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label for="userPrompt" style="margin: 0;">Instrucao ou Pedido Tecnico:</label>
+            
+            <!-- BOTAOZITO PEQUENO E DISCRETO PARA PDF -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="file" id="fileInput" accept=".pdf,application/pdf,.txt,.log" style="display:none;" onchange="tratarSelecaoFicheiro(event)">
+                <button type="button" class="btn-attach" onclick="document.getElementById('fileInput').click()" title="Anexar PDF da prova">+ Anexar PDF</button>
+                <span id="fileBadge" style="display:none;" class="file-pill">
+                    <span id="fileNameDisplay"></span>
+                    <button type="button" onclick="removerFicheiro()" title="Remover">&times;</button>
+                </span>
+            </div>
         </div>
 
-        <label>Exemplos rapidos com a infraestrutura:</label>
+        <textarea id="userPrompt" placeholder="Escreva o que pretende realizar (ou anexe um PDF para resolver os requisitos automaticamente)..."></textarea>
+
         <div class="quick-tags">
-            <button type="button" class="btn-tag"
-                onclick="preencherPrompt('Analisa o PDF carregado, extrai todos os requisitos e fornece a solucao passo a passo com todos os comandos preenchidos com os IPs da nossa infraestrutura.')">Resolver
-                Requisitos do PDF</button>
-            <button type="button" class="btn-tag"
-                onclick="preencherPrompt('Hardening completo do servico SSH no LINSRV (192.168.27.30): permitir apenas o utilizador cyber, bloquear root, validar sintaxe com sshd -t e reiniciar o servico.')">Hardening
-                SSH LINSRV</button>
-            <button type="button" class="btn-tag"
-                onclick="preencherPrompt('Configura o faillock no LINSRV (192.168.27.30) para bloquear contas apos 5 tentativas durante 15 minutos (900 segundos) incluindo even_deny_root.')">PAM
-                faillock LINSRV</button>
-            <button type="button" class="btn-tag"
-                onclick="preencherPrompt('Cria uma GPO no DC (192.168.27.10) para aplicar politicas de password (14 caracteres, 90 dias, 20 historico) e account lockout (5 tentativas, 15 minutos). Inclui comando gpupdate /force.')">GPO
-                Passwords no DC</button>
-            <button type="button" class="btn-tag"
-                onclick="preencherPrompt('Configurar servidor Samba no LINSRV (192.168.27.30) com pasta public (leitura a todos) e private (leitura e escrita apenas para Jane e John). Validar com testparm.')">Samba
-                Seguro no LINSRV</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Hardening SSH no LINSRV: permitir apenas cyber, desativar root, validar sshd -t e reiniciar.')">SSH LINSRV</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Configurar faillock no LINSRV para 5 tentativas, 15 min (900s) e even_deny_root.')">faillock LINSRV</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('GPO no DC para politica de passwords e bloqueio de conta com gpupdate /force.')">GPO DC</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Servidor Samba no LINSRV com pasta public (leitura a todos) e private (Jane e John).')">Samba LINSRV</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Script PowerShell na Workstation para testar portas do DC, WINSRV e LINSRV.')">Teste Portas</button>
         </div>
 
-        <label for="userPrompt">Instrucao / Pedido Tecnico:</label>
-        <textarea id="userPrompt"
-            placeholder="Escreva o que pretende. Se anexou um PDF, pode deixar em branco para resolver todos os requisitos do documento ou indicar uma tarefa especifica (ex: 'Resolve o modulo 2 do PDF')..."></textarea>
-
-        <div style="display: flex; gap: 10px; margin-top: 12px;">
+        <div style="display: flex; gap: 8px;">
             <button type="button" class="btn-blue" id="btnSend" onclick="enviarPedido()">Executar Pedido</button>
-            <button type="button" class="btn-secondary" onclick="limparHistorico()">Limpar Conversa</button>
+            <button type="button" class="btn-secondary" onclick="limparHistorico()">Limpar</button>
         </div>
 
-        <div id="loadingStatus" class="loading">O Gemini esta a processar e a analisar o documento... Por favor aguarde.
-        </div>
+        <div id="loadingStatus" class="loading">A processar o pedido...</div>
     </section>
 
-    <!-- 3. HISTÓRICO / RESPOSTAS -->
-    <section class="card gemini-card" id="chatSection" style="display: none;">
-        <h2>3. Resultados e Comandos Prontos a Executar</h2>
+    <!-- HISTÓRICO DE RESPOSTAS -->
+    <section class="card" id="chatSection" style="display: none;">
+        <h2>Respostas e Comandos</h2>
         <div id="chatHistory" class="chat-history"></div>
     </section>
 
     <script>
         const KEY_STORAGE = 'wsp27_gemini_key';
+        const IP_STORAGE = 'wsp27_infra_ips';
+
+        const DEFAULT_IPS = {
+            ws: '192.168.27.100',
+            dc: '192.168.27.10',
+            winsrv: '192.168.27.20',
+            linsrv: '192.168.27.30'
+        };
+
         let historicoConversa = [];
         let ficheiroCarregado = null; // { name, size, mimeType, base64 }
-
-        // Contexto permanente da infraestrutura WorldSkills Portugal
-        const SYSTEM_PROMPT = `Voce e um assistente especialista em CyberSecurity, Hardening de Sistemas Operativos (Windows e Linux), Redes, Forense e Administracao de Sistemas para a WorldSkills Portugal (Profissao 54).
-INFRAESTRUTURA DO CONCORRENTE (Use estes dados diretamente em todos os comandos, regras de firewall, DNS e scripts sem perguntar):
-- Workstation: Windows 10/11 Pro | IP: 192.168.27.100 | User: concorrente | Pass: wsp2027
-- DC (Domain Controller): Windows Server 2022 (AD DS + DNS) | IP: 192.168.27.10 | User: Administrator | Pass: Wsp2027*
-- WINSRV: Windows Server 2022 (IIS Web/FTP + File Server) | IP: 192.168.27.20 | User: Administrator | Pass: Wsp2027*
-- LINSRV: Ubuntu Server 22.04 (Apache, vsftpd, Samba, SSH, Rsyslog) | IP: 192.168.27.30 (eth0) + eth1 DHCP | User: cyber | Pass: wsp2027
-
-REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
-1. Quando o concorrente carregar um PDF, enunciado ou guiao de prova, leia minuciosamente todo o conteudo. Identifique cada objetivo, restricao e servico mencionado e forneca a solucao tecnica completa passo a passo, organizada por modulos.
-2. Gere comandos e configuracoes prontos a copiar/colar ja preenchidos com os IPs (192.168.27.x) e utilizadores acima.
-3. Nunca utilize emojis.
-4. No Linux, lembre-se sempre de validar sintaxe (sshd -t, testparm, apache2ctl configtest) antes de reiniciar servicos, usar segundos no faillock (ex: 15 min = 900s) e incluir even_deny_root quando aplicavel.
-5. No Windows, lembre-se de usar minutos no lockout e gpupdate /force para aplicar GPOs.`;
 
         const MODEL_FALLBACK_LIST = [
             'gemini-3.1-flash-lite',
@@ -540,13 +213,18 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Carregar Chave
             const guardada = localStorage.getItem(KEY_STORAGE);
             if (guardada) {
                 document.getElementById('apiKey').value = guardada;
                 atualizarBadge(true);
             } else {
                 atualizarBadge(false);
+                document.getElementById('detailsKey').open = true; // Abre se nao houver chave
             }
+
+            // Carregar IPs guardados
+            carregarIPs();
 
             document.getElementById('modelSelect').addEventListener('change', (e) => {
                 const customInput = document.getElementById('customModelInput');
@@ -557,100 +235,121 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                     customInput.style.display = 'none';
                 }
             });
-
-            // Configuracao do Drag & Drop
-            const dropZone = document.getElementById('dropZone');
-            ['dragenter', 'dragover'].forEach(name => {
-                dropZone.addEventListener(name, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.classList.add('dragover');
-                });
-            });
-            ['dragleave', 'drop'].forEach(name => {
-                dropZone.addEventListener(name, (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    dropZone.classList.remove('dragover');
-                });
-            });
-            dropZone.addEventListener('drop', (e) => {
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    processarFicheiro(files[0]);
-                }
-            });
         });
 
+        // Gestao dos IPs
+        function carregarIPs() {
+            const salvos = localStorage.getItem(IP_STORAGE);
+            const ips = salvos ? JSON.parse(salvos) : DEFAULT_IPS;
+            document.getElementById('ipWS').value = ips.ws || DEFAULT_IPS.ws;
+            document.getElementById('ipDC').value = ips.dc || DEFAULT_IPS.dc;
+            document.getElementById('ipWINSRV').value = ips.winsrv || DEFAULT_IPS.winsrv;
+            document.getElementById('ipLINSRV').value = ips.linsrv || DEFAULT_IPS.linsrv;
+        }
+
+        function guardarIPs() {
+            const ips = {
+                ws: document.getElementById('ipWS').value.trim() || DEFAULT_IPS.ws,
+                dc: document.getElementById('ipDC').value.trim() || DEFAULT_IPS.dc,
+                winsrv: document.getElementById('ipWINSRV').value.trim() || DEFAULT_IPS.winsrv,
+                linsrv: document.getElementById('ipLINSRV').value.trim() || DEFAULT_IPS.linsrv
+            };
+            localStorage.setItem(IP_STORAGE, JSON.stringify(ips));
+            const aviso = document.getElementById('savedIpNotice');
+            aviso.style.display = 'inline';
+            setTimeout(() => { aviso.style.display = 'none'; }, 2000);
+        }
+
+        function reporIPsPadrao() {
+            localStorage.removeItem(IP_STORAGE);
+            carregarIPs();
+            alert('IPs repostos para os valores padrao da prova.');
+        }
+
+        function obterSystemPrompt() {
+            const ips = {
+                ws: document.getElementById('ipWS').value.trim() || DEFAULT_IPS.ws,
+                dc: document.getElementById('ipDC').value.trim() || DEFAULT_IPS.dc,
+                winsrv: document.getElementById('ipWINSRV').value.trim() || DEFAULT_IPS.winsrv,
+                linsrv: document.getElementById('ipLINSRV').value.trim() || DEFAULT_IPS.linsrv
+            };
+
+            return `Voce e um assistente especialista em CyberSecurity, Hardening de Sistemas Operativos (Windows e Linux), Redes, Forense e Administracao de Sistemas para a WorldSkills Portugal (Profissao 54).
+INFRAESTRUTURA ATUAL (Use estes dados diretamente em todos os comandos, regras de firewall, DNS e scripts sem perguntar):
+- Workstation: Windows 10/11 Pro | IP: ${ips.ws} | User: concorrente | Pass: wsp2027
+- DC (Domain Controller): Windows Server 2022 (AD DS + DNS) | IP: ${ips.dc} | User: Administrator | Pass: Wsp2027*
+- WINSRV: Windows Server 2022 (IIS Web/FTP + File Server) | IP: ${ips.winsrv} | User: Administrator | Pass: Wsp2027*
+- LINSRV: Ubuntu Server 22.04 (Apache, vsftpd, Samba, SSH, Rsyslog) | IP: ${ips.linsrv} (eth0) + eth1 DHCP | User: cyber | Pass: wsp2027
+
+REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
+1. Quando o concorrente carregar um PDF, enunciado ou guiao de prova, leia minuciosamente todo o conteudo. Identifique cada objetivo, restricao e servico mencionado e forneca a solucao tecnica completa passo a passo, preenchendo todos os comandos com os IPs acima.
+2. Gere comandos e configuracoes prontos a copiar/colar ja preenchidos com os IPs e utilizadores configurados.
+3. Nunca utilize emojis.
+4. No Linux, lembre-se sempre de validar sintaxe (sshd -t, testparm, apache2ctl configtest) antes de reiniciar servicos, usar segundos no faillock (ex: 15 min = 900s) e incluir even_deny_root quando aplicavel.
+5. No Windows, lembre-se de usar minutos no lockout e gpupdate /force para aplicar GPOs.`;
+        }
+
+        // Ficheiro discreto
         function tratarSelecaoFicheiro(event) {
             const files = event.target.files;
             if (files.length > 0) {
-                processarFicheiro(files[0]);
-            }
-        }
+                const file = files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    const base64 = dataUrl.split(',')[1];
+                    let mime = file.type;
+                    if (!mime) {
+                        if (file.name.endsWith('.pdf')) mime = 'application/pdf';
+                        else if (file.name.endsWith('.txt') || file.name.endsWith('.log')) mime = 'text/plain';
+                        else mime = 'application/pdf';
+                    }
 
-        function processarFicheiro(file) {
-            if (file.size > 20 * 1024 * 1024) {
-                alert('Aviso: O ficheiro selecionado tem mais de 20MB. Recomendamos documentos ate 20MB para processamento rapido.');
-            }
+                    ficheiroCarregado = {
+                        name: file.name,
+                        size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
+                        mimeType: mime,
+                        base64: base64
+                    };
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const dataUrl = e.target.result;
-                const base64 = dataUrl.split(',')[1];
-                let mime = file.type;
-                if (!mime) {
-                    if (file.name.endsWith('.pdf')) mime = 'application/pdf';
-                    else if (file.name.endsWith('.txt') || file.name.endsWith('.log')) mime = 'text/plain';
-                    else mime = 'application/pdf';
-                }
+                    document.getElementById('fileNameDisplay').textContent = file.name;
+                    document.getElementById('fileBadge').style.display = 'inline-flex';
 
-                ficheiroCarregado = {
-                    name: file.name,
-                    size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
-                    mimeType: mime,
-                    base64: base64
+                    const promptArea = document.getElementById('userPrompt');
+                    if (!promptArea.value.trim()) {
+                        promptArea.value = 'Analisa o PDF do enunciado em anexo e resolve os requisitos tecnicos com os comandos e configuracoes preenchidos para a nossa infraestrutura.';
+                    }
                 };
-
-                document.getElementById('fileNameDisplay').textContent = ficheiroCarregado.name;
-                document.getElementById('fileSizeDisplay').textContent = `(${ficheiroCarregado.size})`;
-                document.getElementById('fileInfoBar').classList.add('active');
-
-                // Sugerir prompt padrao se o campo estiver vazio
-                const promptArea = document.getElementById('userPrompt');
-                if (!promptArea.value.trim()) {
-                    promptArea.value = 'Analisa cuidadosamente o PDF do enunciado em anexo. Extrai todos os requisitos tecnicos e resolve cada uma das questoes/tarefas com os comandos, configuracoes e scripts exatos preenchidos com os IPs e credenciais da nossa infraestrutura.';
-                }
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            }
         }
 
         function removerFicheiro() {
             ficheiroCarregado = null;
             document.getElementById('fileInput').value = '';
-            document.getElementById('fileInfoBar').classList.remove('active');
+            document.getElementById('fileBadge').style.display = 'none';
         }
 
         function atualizarBadge(ativa) {
             const b = document.getElementById('keyBadge');
             if (ativa) {
                 b.className = 'badge badge-success';
-                b.textContent = 'Chave pronta para uso';
+                b.textContent = 'Chave ativa';
             } else {
                 b.className = 'badge badge-warning';
-                b.textContent = 'Nenhuma chave configurada';
+                b.textContent = 'Sem chave';
             }
         }
 
         function salvarChave() {
             const chave = document.getElementById('apiKey').value.trim();
             if (!chave) {
-                alert('Insira uma chave valida antes de salvar.');
+                alert('Insira uma chave valida.');
                 return;
             }
             localStorage.setItem(KEY_STORAGE, chave);
             atualizarBadge(true);
-            alert('Chave guardada com sucesso no seu navegador.');
+            alert('Chave guardada.');
         }
 
         function limparChave() {
@@ -683,13 +382,13 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
         async function carregarModelosDisponiveis() {
             const chave = document.getElementById('apiKey').value.trim() || localStorage.getItem(KEY_STORAGE);
             if (!chave) {
-                alert('Por favor insira a sua API Key antes de atualizar os modelos.');
+                alert('Insira a API Key antes de carregar modelos.');
                 return;
             }
 
             const badge = document.getElementById('keyBadge');
             badge.className = 'badge badge-warning';
-            badge.textContent = 'A carregar modelos...';
+            badge.textContent = 'A ler...';
 
             try {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models?key=${chave}`;
@@ -717,17 +416,17 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                     });
                     const optCustom = document.createElement('option');
                     optCustom.value = 'custom';
-                    optCustom.textContent = 'Outro modelo personalizado...';
+                    optCustom.textContent = 'Outro modelo...';
                     select.appendChild(optCustom);
 
                     badge.className = 'badge badge-success';
-                    badge.textContent = `${modelosGeracao.length} modelos carregados`;
-                    alert(`Foram carregados ${modelosGeracao.length} modelos compativeis com a sua chave!`);
+                    badge.textContent = `${modelosGeracao.length} modelos`;
+                    alert(`${modelosGeracao.length} modelos carregados com sucesso!`);
                 }
             } catch (e) {
                 badge.className = 'badge badge-warning';
-                badge.textContent = 'Erro ao carregar';
-                alert('Nao foi possivel listar os modelos da API: ' + e.message);
+                badge.textContent = 'Erro';
+                alert('Erro ao carregar modelos: ' + e.message);
             }
         }
 
@@ -744,19 +443,20 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             let prompt = document.getElementById('userPrompt').value.trim();
 
             if (!chave) {
-                alert('Atencao: Defina primeiro a sua Gemini API Key no painel superior.');
+                alert('Defina primeiro a Gemini API Key na seccao de configuracao.');
+                document.getElementById('detailsKey').open = true;
                 document.getElementById('apiKey').focus();
                 return;
             }
 
             if (!prompt && !ficheiroCarregado) {
-                alert('Escreva uma instrucao ou anexe um ficheiro PDF para resolucao.');
+                alert('Escreva uma instrucao ou anexe um ficheiro.');
                 document.getElementById('userPrompt').focus();
                 return;
             }
 
             if (!prompt && ficheiroCarregado) {
-                prompt = 'Analisa cuidadosamente o PDF do enunciado em anexo. Extrai todos os requisitos tecnicos e resolve cada uma das questoes com todos os comandos, configuracoes e scripts exatos preenchidos com os IPs e utilizadores da nossa infraestrutura.';
+                prompt = 'Analisa o documento em anexo e resolve todos os requisitos tecnicos com comandos e configuracoes preenchidos para a nossa infraestrutura.';
             }
 
             const btn = document.getElementById('btnSend');
@@ -769,7 +469,6 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             chatSection.style.display = 'block';
             fallbackNotice.style.display = 'none';
 
-            // Preparar partes da mensagem do utilizador
             const partesUsuario = [];
             let nomeFicheiroAnexo = null;
 
@@ -785,11 +484,9 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
 
             partesUsuario.push({ text: prompt });
 
-            // Apresentar na interface a mensagem enviada
             adicionarMensagem('Voce', prompt, 'msg-user', false, nomeFicheiroAnexo);
             document.getElementById('userPrompt').value = '';
 
-            // Se for ficheiro unico, removemos apos o primeiro envio para nao reenviar em mensagens seguintes da conversa
             const ficheiroParaEnviar = ficheiroCarregado;
             removerFicheiro();
 
@@ -800,6 +497,8 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
 
             const modeloInicial = obterModeloAtual();
             const filaModelos = [modeloInicial, ...MODEL_FALLBACK_LIST.filter(m => m !== modeloInicial)];
+
+            const systemPromptAtual = obterSystemPrompt();
 
             let respostaSucesso = null;
             let ultimoErro = null;
@@ -812,7 +511,7 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                 const payload = {
                     contents: novasMensagens,
                     systemInstruction: {
-                        parts: [{ text: SYSTEM_PROMPT }]
+                        parts: [{ text: systemPromptAtual }]
                     }
                 };
 
@@ -823,7 +522,6 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                         body: JSON.stringify(payload)
                     });
 
-                    // Caso o modelo nao aceite systemInstruction (fallback)
                     if (res.status === 400) {
                         const fallbackPayload = {
                             contents: [
@@ -831,7 +529,7 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                                     role: 'user',
                                     parts: [
                                         ...(ficheiroParaEnviar ? [{ inlineData: { mimeType: ficheiroParaEnviar.mimeType, data: ficheiroParaEnviar.base64 } }] : []),
-                                        { text: `[CONTEXTO DO SISTEMA E INFRAESTRUTURA]\n${SYSTEM_PROMPT}\n\n[PEDIDO DO UTILIZADOR]\n${prompt}` }
+                                        { text: `[CONTEXTO DO SISTEMA E INFRAESTRUTURA]\n${systemPromptAtual}\n\n[PEDIDO DO UTILIZADOR]\n${prompt}` }
                                     ]
                                 }
                             ]
@@ -860,7 +558,7 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                     if (res.status === 429 || res.status === 404 || res.status === 503) {
                         if (i + 1 < filaModelos.length) {
                             fallbackNotice.style.display = 'block';
-                            fallbackNotice.textContent = `Aviso: O modelo ${modeloAtual} retornou erro (${res.status}). A tentar automaticamente com ${filaModelos[i + 1]}...`;
+                            fallbackNotice.textContent = `Aviso: O modelo ${modeloAtual} retornou erro (${res.status}). A tentar com ${filaModelos[i+1]}...`;
                             continue;
                         }
                     } else {
@@ -878,12 +576,12 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
 
                 if (modeloUtilizado !== modeloInicial) {
                     fallbackNotice.style.display = 'block';
-                    fallbackNotice.textContent = `Nota: Resposta gerada com sucesso atraves do modelo alternativo ${modeloUtilizado} (o modelo ${modeloInicial} estava indisponivel ou com quota esgotada).`;
+                    fallbackNotice.textContent = `Nota: Resposta gerada atraves de ${modeloUtilizado}.`;
                 }
 
                 adicionarMensagem(`Gemini (${modeloUtilizado})`, respostaSucesso, 'msg-gemini');
             } else {
-                adicionarMensagem('Erro', ultimoErro || 'Nao foi possivel obter resposta dos modelos.', 'msg-gemini', true);
+                adicionarMensagem('Erro', ultimoErro || 'Sem resposta do modelo.', 'msg-gemini', true);
             }
 
             btn.disabled = false;
@@ -902,8 +600,9 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
 
             if (anexo) {
                 const anexoSpan = document.createElement('div');
-                anexoSpan.className = 'badge-file';
-                anexoSpan.textContent = `Documento analisado: ${anexo}`;
+                anexoSpan.className = 'file-pill';
+                anexoSpan.style.marginBottom = '6px';
+                anexoSpan.textContent = `Anexo: ${anexo}`;
                 cardMsg.appendChild(anexoSpan);
             }
 
@@ -958,18 +657,18 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             for (let l of linhas) {
                 let s = escapeHtml(l);
                 if (s.startsWith('### ')) {
-                    html += `<h3 style="margin: 12px 0 6px 0; color: #0056b3;">${s.substring(4)}</h3>`;
+                    html += `<h3 style="margin: 10px 0 4px 0; color: #0056b3; font-size: 15px;">${s.substring(4)}</h3>`;
                 } else if (s.startsWith('## ')) {
-                    html += `<h2 style="margin: 16px 0 8px 0; color: #0056b3; font-size: 18px;">${s.substring(3)}</h2>`;
+                    html += `<h2 style="margin: 12px 0 6px 0; color: #0056b3; font-size: 16px;">${s.substring(3)}</h2>`;
                 } else if (s.startsWith('# ')) {
-                    html += `<h1 style="margin: 20px 0 10px 0; color: #0056b3; font-size: 20px;">${s.substring(2)}</h1>`;
+                    html += `<h1 style="margin: 14px 0 8px 0; color: #0056b3; font-size: 18px;">${s.substring(2)}</h1>`;
                 } else if (s.startsWith('* ') || s.startsWith('- ')) {
-                    html += `<div style="margin-left: 15px; margin-bottom: 4px;">&bull; ${s.substring(2)}</div>`;
+                    html += `<div style="margin-left: 12px; margin-bottom: 3px;">&bull; ${s.substring(2)}</div>`;
                 } else if (s.trim() === '') {
-                    html += '<div style="height: 6px;"></div>';
+                    html += '<div style="height: 4px;"></div>';
                 } else {
                     s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-                    html += `<p style="margin: 0 0 6px 0;">${s}</p>`;
+                    html += `<p style="margin: 0 0 5px 0;">${s}</p>`;
                 }
             }
             wrapper.innerHTML = html;
@@ -1011,5 +710,4 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
         }
     </script>
 </body>
-
 </html>
