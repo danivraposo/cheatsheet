@@ -1,22 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assistente - WSP27</title>
     <style>
-        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 15px; background: #f4f6f9; color: #333; }
-        .card { padding: 18px; margin-bottom: 16px; border-left: 4px solid #0056b3; border-radius: 6px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-        .card.discreet { border-left-color: #6c757d; }
-        .card.primary { border-left-color: #0d6efd; }
-        h1 { color: #0056b3; font-size: 22px; margin: 0 0 14px 0; }
-        h2 { color: #0056b3; font-size: 16px; margin: 0 0 10px 0; }
-        .back { display: inline-block; margin-bottom: 15px; padding: 6px 12px; border-radius: 4px; background: #0056b3; color: #fff; text-decoration: none; font-size: 13px; font-weight: bold; }
-        .back:hover { background: #004085; }
-        
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        .card {
+            padding: 18px;
+            margin-bottom: 16px;
+            border-left: 4px solid #0056b3;
+            border-radius: 6px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+        }
+
+        .card.discreet {
+            border-left-color: #6c757d;
+        }
+
+        .card.primary {
+            border-left-color: #0d6efd;
+        }
+
+        h1 {
+            color: #0056b3;
+            font-size: 22px;
+            margin: 0 0 14px 0;
+        }
+
+        h2 {
+            color: #0056b3;
+            font-size: 16px;
+            margin: 0 0 10px 0;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            background: #0056b3;
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .back:hover {
+            background: #004085;
+        }
+
         /* Formularios compactos */
-        label { display: block; margin-bottom: 4px; font-size: 13px; font-weight: bold; color: #444; }
-        input[type="text"], input[type="password"], select, textarea {
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select,
+        textarea {
             width: 100%;
             padding: 8px 10px;
             border: 1px solid #ced4da;
@@ -25,60 +81,283 @@
             font-family: inherit;
             box-sizing: border-box;
         }
-        textarea { resize: vertical; min-height: 95px; line-height: 1.5; }
-        
-        .row-flex { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .row-flex input { flex: 1; min-width: 180px; }
-        
+
+        textarea {
+            resize: vertical;
+            min-height: 95px;
+            line-height: 1.5;
+        }
+
+        .row-flex {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .row-flex input {
+            flex: 1;
+            min-width: 180px;
+        }
+
         /* Botoes */
-        button { padding: 6px 12px; border: 0; border-radius: 4px; background: #28a745; color: #fff; cursor: pointer; font-size: 13px; font-weight: bold; transition: background .15s; }
-        button:hover { background: #218838; }
-        button.btn-blue { background: #0d6efd; }
-        button.btn-blue:hover { background: #0b5ed7; }
-        button.btn-secondary { background: #6c757d; }
-        button.btn-secondary:hover { background: #5a6268; }
-        button.btn-tag { background: #eef1f5; color: #0056b3; border: 1px solid #d0d7de; font-size: 12px; padding: 4px 8px; font-weight: 600; }
-        button.btn-tag:hover { background: #0056b3; color: #fff; }
-        button.btn-attach { background: #f8f9fa; color: #495057; border: 1px solid #ced4da; font-size: 12px; padding: 3px 8px; font-weight: normal; }
-        button.btn-attach:hover { background: #e2e6ea; }
+        button {
+            padding: 6px 12px;
+            border: 0;
+            border-radius: 4px;
+            background: #28a745;
+            color: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: background .15s;
+        }
+
+        button:hover {
+            background: #218838;
+        }
+
+        button.btn-blue {
+            background: #0d6efd;
+        }
+
+        button.btn-blue:hover {
+            background: #0b5ed7;
+        }
+
+        button.btn-secondary {
+            background: #6c757d;
+        }
+
+        button.btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        button.btn-tag {
+            background: #eef1f5;
+            color: #0056b3;
+            border: 1px solid #d0d7de;
+            font-size: 12px;
+            padding: 4px 8px;
+            font-weight: 600;
+        }
+
+        button.btn-tag:hover {
+            background: #0056b3;
+            color: #fff;
+        }
+
+        button.btn-attach {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #ced4da;
+            font-size: 12px;
+            padding: 3px 8px;
+            font-weight: normal;
+        }
+
+        button.btn-attach:hover {
+            background: #e2e6ea;
+        }
 
         /* Ficheiro discreto */
-        .file-pill { display: inline-flex; align-items: center; gap: 6px; background: #e7f1ff; border: 1px solid #b6d4fe; color: #084298; padding: 2px 8px; border-radius: 3px; font-size: 12px; }
-        .file-pill button { background: transparent; color: #dc3545; border: none; padding: 0 3px; font-size: 14px; cursor: pointer; font-weight: bold; }
-        .file-pill button:hover { background: transparent; color: #a71d2a; }
+        .file-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e7f1ff;
+            border: 1px solid #b6d4fe;
+            color: #084298;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .file-pill button {
+            background: transparent;
+            color: #dc3545;
+            border: none;
+            padding: 0 3px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .file-pill button:hover {
+            background: transparent;
+            color: #a71d2a;
+        }
 
         /* Details / Configuracao recolhivel */
-        details { background: #fff; border-radius: 6px; margin-bottom: 15px; border: 1px solid #e0e0e0; }
-        details summary { padding: 10px 15px; cursor: pointer; font-size: 13.5px; font-weight: bold; color: #0056b3; user-select: none; }
-        details[open] summary { border-bottom: 1px solid #eee; }
-        .details-body { padding: 15px; }
+        details {
+            background: #fff;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+        }
 
-        .ip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 8px; }
-        .ip-item label { font-size: 12px; margin-bottom: 2px; }
-        .ip-item input { font-size: 12.5px; padding: 5px 8px; }
+        details summary {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: bold;
+            color: #0056b3;
+            user-select: none;
+        }
 
-        .quick-tags { display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0 12px 0; }
-        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: bold; }
-        .badge-success { background: #d1e7dd; color: #0f5132; }
-        .badge-warning { background: #fff3cd; color: #664d03; }
+        details[open] summary {
+            border-bottom: 1px solid #eee;
+        }
+
+        .details-body {
+            padding: 15px;
+        }
+
+        .ip-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .ip-item label {
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+
+        .ip-item input {
+            font-size: 12.5px;
+            padding: 5px 8px;
+        }
+
+        .quick-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 8px 0 12px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #664d03;
+        }
 
         /* Codigo e mensagens */
-        pre { margin-top: 0; padding: 12px; overflow-x: auto; border-radius: 0 0 5px 5px; background: #1e1e1e; color: #d4d4d4; font: 12.5px/1.5 Consolas, monospace; white-space: pre-wrap; word-break: break-word; }
-        .code-box { margin: 12px 0; border-radius: 5px; overflow: hidden; border: 1px solid #2d2d2d; }
-        .code-bar { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 5px 10px; color: #aaa; font: 11px Consolas, monospace; }
-        .code-bar button { padding: 3px 8px; font-size: 11px; background: #198754; }
-        code { padding: 2px 5px; border-radius: 3px; background: #eef1f5; color: #d63384; font-family: Consolas, monospace; font-size: 12.5px; }
-        
-        .chat-history { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
-        .msg { padding: 12px 15px; border-radius: 6px; font-size: 14px; line-height: 1.5; }
-        .msg-user { background: #f0f4f8; border: 1px solid #d0dbe5; align-self: flex-end; width: 95%; }
-        .msg-gemini { background: #fff; border: 1px solid #dee2e6; width: 100%; box-shadow: 0 1px 2px rgba(0,0,0,.05); }
-        .msg-author { font-weight: bold; font-size: 12px; margin-bottom: 4px; color: #0056b3; }
-        .loading { display: none; padding: 8px 0; font-size: 13px; font-weight: bold; color: #0d6efd; }
-        .loading.active { display: block; }
-        .notice-warning { padding: 8px 12px; border-left: 3px solid #ffc107; background: #fff3cd; border-radius: 3px; margin-top: 8px; font-size: 12px; color: #664d03; display: none; }
+        pre {
+            margin-top: 0;
+            padding: 12px;
+            overflow-x: auto;
+            border-radius: 0 0 5px 5px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font: 12.5px/1.5 Consolas, monospace;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .code-box {
+            margin: 12px 0;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid #2d2d2d;
+        }
+
+        .code-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #2d2d2d;
+            padding: 5px 10px;
+            color: #aaa;
+            font: 11px Consolas, monospace;
+        }
+
+        .code-bar button {
+            padding: 3px 8px;
+            font-size: 11px;
+        }
+
+        code {
+            padding: 2px 5px;
+            border-radius: 3px;
+            background: #eef1f5;
+            color: #d63384;
+            font-family: Consolas, monospace;
+            font-size: 12.5px;
+        }
+
+        .chat-history {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .msg {
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .msg-user {
+            background: #f0f4f8;
+            border: 1px solid #d0dbe5;
+            align-self: flex-end;
+            width: 95%;
+        }
+
+        .msg-gemini {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            width: 100%;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+        }
+
+        .msg-author {
+            font-weight: bold;
+            font-size: 12px;
+            color: #0056b3;
+        }
+
+        .loading {
+            display: none;
+            padding: 8px 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .notice-warning {
+            padding: 8px 12px;
+            border-left: 3px solid #ffc107;
+            background: #fff3cd;
+            border-radius: 3px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #664d03;
+            display: none;
+        }
     </style>
 </head>
+
 <body>
     <a href="index.html" class="back">Voltar ao Menu Principal</a>
     <h1>Assistente Tecnico - CyberSecurity</h1>
@@ -87,7 +366,8 @@
     <details id="detailsInfra">
         <summary>Configuracao de Rede e IPs da Prova (Clique para editar)</summary>
         <div class="details-body">
-            <p style="margin-top: 0; font-size: 12.5px; color: #555;">Os comandos e scripts gerados utilizam diretamente os seguintes enderecos IP:</p>
+            <p style="margin-top: 0; font-size: 12.5px; color: #555;">Os comandos e scripts gerados utilizam diretamente
+                os seguintes enderecos IP:</p>
             <div class="ip-grid">
                 <div class="ip-item">
                     <label for="ipWS">Workstation (Win 10/11):</label>
@@ -109,7 +389,9 @@
             <div style="margin-top: 10px; display: flex; gap: 8px;">
                 <button type="button" onclick="guardarIPs()">Guardar IPs</button>
                 <button type="button" class="btn-secondary" onclick="reporIPsPadrao()">Repor Padroes</button>
-                <span id="savedIpNotice" style="display:none; font-size: 12px; color: #198754; align-self: center; font-weight: bold;">IPs atualizados com sucesso!</span>
+                <span id="savedIpNotice"
+                    style="display:none; font-size: 12px; color: #198754; align-self: center; font-weight: bold;">IPs
+                    atualizados com sucesso!</span>
             </div>
         </div>
     </details>
@@ -129,7 +411,8 @@
                 <div style="flex: 2; min-width: 220px;">
                     <label for="modelSelect">Modelo:</label>
                     <select id="modelSelect">
-                        <option value="gemini-3.1-flash-lite" selected>gemini-3.1-flash-lite (Recomendado - 500 pedidos/dia)</option>
+                        <option value="gemini-3.1-flash-lite" selected>gemini-3.1-flash-lite (Recomendado - 500
+                            pedidos/dia)</option>
                         <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (500 pedidos/dia)</option>
                         <option value="gemini-3.6-flash">gemini-3.6-flash (20 pedidos/dia)</option>
                         <option value="gemini-3-flash">gemini-3-flash (20 pedidos/dia)</option>
@@ -138,10 +421,12 @@
                         <option value="gemma-4-26b">gemma-4-26b (14.400 pedidos/dia)</option>
                         <option value="custom">Outro modelo...</option>
                     </select>
-                    <input type="text" id="customModelInput" placeholder="Nome do modelo" style="display:none; margin-top:6px;">
+                    <input type="text" id="customModelInput" placeholder="Nome do modelo"
+                        style="display:none; margin-top:6px;">
                 </div>
                 <div style="padding-top: 20px; display: flex; gap: 6px; align-items: center;">
-                    <button type="button" class="btn-tag" onclick="carregarModelosDisponiveis()">Ler Modelos da Chave</button>
+                    <button type="button" class="btn-tag" onclick="carregarModelosDisponiveis()">Ler Modelos da
+                        Chave</button>
                     <span id="keyBadge" class="badge badge-warning">Sem chave</span>
                 </div>
             </div>
@@ -153,11 +438,13 @@
     <section class="card primary">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
             <label for="userPrompt" style="margin: 0;">Instrucao ou Pedido Tecnico:</label>
-            
+
             <!-- BOTAOZITO PEQUENO E DISCRETO PARA PDF -->
             <div style="display: flex; align-items: center; gap: 8px;">
-                <input type="file" id="fileInput" accept=".pdf,application/pdf,.txt,.log" style="display:none;" onchange="tratarSelecaoFicheiro(event)">
-                <button type="button" class="btn-attach" onclick="document.getElementById('fileInput').click()" title="Anexar PDF da prova">+ Anexar PDF</button>
+                <input type="file" id="fileInput" accept=".pdf,application/pdf,.txt,.log" style="display:none;"
+                    onchange="tratarSelecaoFicheiro(event)">
+                <button type="button" class="btn-attach" onclick="document.getElementById('fileInput').click()"
+                    title="Anexar PDF da prova">+ Anexar PDF</button>
                 <span id="fileBadge" style="display:none;" class="file-pill">
                     <span id="fileNameDisplay"></span>
                     <button type="button" onclick="removerFicheiro()" title="Remover">&times;</button>
@@ -165,19 +452,32 @@
             </div>
         </div>
 
-        <textarea id="userPrompt" placeholder="Escreva o que pretende realizar (ou anexe um PDF para resolver os requisitos automaticamente)..."></textarea>
+        <textarea id="userPrompt"
+            placeholder="Escreva o que pretende realizar (ou anexe um PDF para resolver os requisitos automaticamente)..."></textarea>
 
         <div class="quick-tags">
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Hardening SSH no LINSRV: permitir apenas cyber, desativar root, validar sshd -t e reiniciar.')">SSH LINSRV</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Configurar faillock no LINSRV para 5 tentativas, 15 min (900s) e even_deny_root.')">faillock LINSRV</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('GPO no DC para politica de passwords e bloqueio de conta com gpupdate /force.')">GPO DC</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Servidor Samba no LINSRV com pasta public (leitura a todos) e private (Jane e John).')">Samba LINSRV</button>
-            <button type="button" class="btn-tag" onclick="preencherPrompt('Script PowerShell na Workstation para testar portas do DC, WINSRV e LINSRV.')">Teste Portas</button>
+            <button type="button" class="btn-tag"
+                onclick="preencherPrompt('Hardening SSH no LINSRV: permitir apenas cyber, desativar root, validar sshd -t e reiniciar.')">SSH
+                LINSRV</button>
+            <button type="button" class="btn-tag"
+                onclick="preencherPrompt('Configurar faillock no LINSRV para 5 tentativas, 15 min (900s) e even_deny_root.')">faillock
+                LINSRV</button>
+            <button type="button" class="btn-tag"
+                onclick="preencherPrompt('GPO no DC para politica de passwords e bloqueio de conta com gpupdate /force.')">GPO
+                DC</button>
+            <button type="button" class="btn-tag"
+                onclick="preencherPrompt('Servidor Samba no LINSRV com pasta public (leitura a todos) e private (Jane e John).')">Samba
+                LINSRV</button>
+            <button type="button" class="btn-tag"
+                onclick="preencherPrompt('Script PowerShell na Workstation para testar portas do DC, WINSRV e LINSRV.')">Teste
+                Portas</button>
         </div>
 
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 8px; align-items: center;">
             <button type="button" class="btn-blue" id="btnSend" onclick="enviarPedido()">Executar Pedido</button>
             <button type="button" class="btn-secondary" onclick="limparHistorico()">Limpar</button>
+            <button type="button" class="btn-tag" id="btnDownload" onclick="descarregarTudo()"
+                title="Descarregar para Bloco de Notas (.txt)">Descarregar</button>
         </div>
 
         <div id="loadingStatus" class="loading">A processar o pedido...</div>
@@ -185,7 +485,11 @@
 
     <!-- HISTÓRICO DE RESPOSTAS -->
     <section class="card" id="chatSection" style="display: none;">
-        <h2>Respostas e Comandos</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <h2 style="margin: 0;">Respostas e Comandos</h2>
+            <button type="button" class="btn-tag" onclick="descarregarTudo()"
+                title="Descarregar para Bloco de Notas (.txt)">Descarregar</button>
+        </div>
         <div id="chatHistory" class="chat-history"></div>
     </section>
 
@@ -201,7 +505,7 @@
         };
 
         let historicoConversa = [];
-        let ficheiroCarregado = null; // { name, size, mimeType, base64 }
+        let ficheiroCarregado = null;
 
         const MODEL_FALLBACK_LIST = [
             'gemini-3.1-flash-lite',
@@ -213,17 +517,15 @@
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Carregar Chave
             const guardada = localStorage.getItem(KEY_STORAGE);
             if (guardada) {
                 document.getElementById('apiKey').value = guardada;
                 atualizarBadge(true);
             } else {
                 atualizarBadge(false);
-                document.getElementById('detailsKey').open = true; // Abre se nao houver chave
+                document.getElementById('detailsKey').open = true;
             }
 
-            // Carregar IPs guardados
             carregarIPs();
 
             document.getElementById('modelSelect').addEventListener('change', (e) => {
@@ -295,7 +597,7 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             if (files.length > 0) {
                 const file = files[0];
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const dataUrl = e.target.result;
                     const base64 = dataUrl.split(',')[1];
                     let mime = file.type;
@@ -328,6 +630,40 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             ficheiroCarregado = null;
             document.getElementById('fileInput').value = '';
             document.getElementById('fileBadge').style.display = 'none';
+        }
+
+        // Descarregar para Bloco de Notas (.txt)
+        function descarregarParaBlocoDeNotas(texto, nomeFicheiro = 'resolucao_wsp27.txt') {
+            const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nomeFicheiro;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function descarregarTudo() {
+            if (historicoConversa.length === 0) {
+                alert('Ainda nao ha respostas para descarregar.');
+                return;
+            }
+            let conteudo = '==================================================\r\n';
+            conteudo += 'WSP27 - CYBERSECURITY RESUMO / BLOCO DE NOTAS\r\n';
+            conteudo += '==================================================\r\n\r\n';
+
+            historicoConversa.forEach(msg => {
+                const papel = msg.role === 'user' ? 'PEDIDO' : 'RESPOSTA';
+                const texto = msg.parts?.map(p => p.text || '').join('\n') || '';
+                conteudo += `--------------------------------------------------\r\n`;
+                conteudo += `[${papel}]\r\n`;
+                conteudo += `--------------------------------------------------\r\n`;
+                conteudo += `${texto}\r\n\r\n`;
+            });
+
+            descarregarParaBlocoDeNotas(conteudo, 'resolucao_wsp27.txt');
         }
 
         function atualizarBadge(ativa) {
@@ -558,7 +894,7 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                     if (res.status === 429 || res.status === 404 || res.status === 503) {
                         if (i + 1 < filaModelos.length) {
                             fallbackNotice.style.display = 'block';
-                            fallbackNotice.textContent = `Aviso: O modelo ${modeloAtual} retornou erro (${res.status}). A tentar com ${filaModelos[i+1]}...`;
+                            fallbackNotice.textContent = `Aviso: O modelo ${modeloAtual} retornou erro (${res.status}). A tentar com ${filaModelos[i + 1]}...`;
                             continue;
                         }
                     } else {
@@ -594,8 +930,28 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             cardMsg.className = `msg ${classe}`;
 
             const authorDiv = document.createElement('div');
-            authorDiv.className = 'msg-author';
-            authorDiv.textContent = autor;
+            authorDiv.style.display = 'flex';
+            authorDiv.style.justifyContent = 'space-between';
+            authorDiv.style.alignItems = 'center';
+            authorDiv.style.marginBottom = '4px';
+
+            const authorTitle = document.createElement('span');
+            authorTitle.className = 'msg-author';
+            authorTitle.textContent = autor;
+            authorDiv.appendChild(authorTitle);
+
+            if (classe === 'msg-gemini' && !isError) {
+                const btnDl = document.createElement('button');
+                btnDl.type = 'button';
+                btnDl.className = 'btn-tag';
+                btnDl.style.padding = '2px 7px';
+                btnDl.style.fontSize = '11px';
+                btnDl.textContent = 'Descarregar';
+                btnDl.title = 'Descarregar resposta para Bloco de Notas';
+                btnDl.onclick = () => descarregarParaBlocoDeNotas(texto, 'resposta_gemini.txt');
+                authorDiv.appendChild(btnDl);
+            }
+
             cardMsg.appendChild(authorDiv);
 
             if (anexo) {
@@ -683,8 +1039,13 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             bar.className = 'code-bar';
             bar.innerHTML = `<span>${escapeHtml(lang.toUpperCase())}</span>`;
 
+            const btnGroup = document.createElement('div');
+            btnGroup.style.display = 'flex';
+            btnGroup.style.gap = '5px';
+
             const btn = document.createElement('button');
             btn.type = 'button';
+            btn.style.background = '#198754';
             btn.textContent = 'Copiar';
             btn.onclick = async () => {
                 await navigator.clipboard.writeText(codigo);
@@ -692,8 +1053,19 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                 btn.textContent = 'Copiado';
                 setTimeout(() => { btn.textContent = prev; }, 1200);
             };
+            btnGroup.appendChild(btn);
 
-            bar.appendChild(btn);
+            const btnDl = document.createElement('button');
+            btnDl.type = 'button';
+            btnDl.style.background = '#0d6efd';
+            btnDl.textContent = 'Descarregar';
+            btnDl.title = 'Descarregar para Bloco de Notas';
+            btnDl.onclick = () => {
+                descarregarParaBlocoDeNotas(codigo, `script_${lang.toLowerCase()}.txt`);
+            };
+            btnGroup.appendChild(btnDl);
+
+            bar.appendChild(btnGroup);
 
             const pre = document.createElement('pre');
             pre.textContent = codigo;
@@ -710,4 +1082,5 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
         }
     </script>
 </body>
+
 </html>
