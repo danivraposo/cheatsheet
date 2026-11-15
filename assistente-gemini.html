@@ -206,6 +206,7 @@
 
         let historicoConversa = [];
         let ficheiroCarregado = null;
+        let contadorRespostas = 0;
 
         const MODEL_FALLBACK_LIST = [
             'gemini-3.1-flash-lite',
@@ -332,8 +333,8 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             document.getElementById('fileBadge').style.display = 'none';
         }
 
-        // Descarregar para Bloco de Notas (.txt)
-        function descarregarParaBlocoDeNotas(texto, nomeFicheiro = 'resolucao_wsp27.txt') {
+        // Descarregar para Bloco de Notas (.txt) - apenas respostas com prefixo r1:, r2:...
+        function descarregarParaBlocoDeNotas(texto, nomeFicheiro = 'respostas.txt') {
             const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -346,24 +347,19 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
         }
 
         function descarregarTudo() {
-            if (historicoConversa.length === 0) {
+            const respostas = historicoConversa.filter(msg => msg.role === 'model');
+            if (respostas.length === 0) {
                 alert('Ainda nao ha respostas para descarregar.');
                 return;
             }
-            let conteudo = '==================================================\r\n';
-            conteudo += 'WSP27 - CYBERSECURITY RESUMO / BLOCO DE NOTAS\r\n';
-            conteudo += '==================================================\r\n\r\n';
-
-            historicoConversa.forEach(msg => {
-                const papel = msg.role === 'user' ? 'PEDIDO' : 'RESPOSTA';
-                const texto = msg.parts?.map(p => p.text || '').join('\n') || '';
-                conteudo += `--------------------------------------------------\r\n`;
-                conteudo += `[${papel}]\r\n`;
-                conteudo += `--------------------------------------------------\r\n`;
-                conteudo += `${texto}\r\n\r\n`;
+            let conteudo = '';
+            respostas.forEach((msg, idx) => {
+                const num = idx + 1;
+                const texto = msg.parts?.map(p => p.text || '').join('\n').trim() || '';
+                conteudo += `r${num}:\r\n${texto}\r\n\r\n`;
             });
 
-            descarregarParaBlocoDeNotas(conteudo, 'resolucao_wsp27.txt');
+            descarregarParaBlocoDeNotas(conteudo.trim(), 'respostas.txt');
         }
 
         function atualizarBadge(ativa) {
@@ -408,6 +404,7 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
 
         function limparHistorico() {
             historicoConversa = [];
+            contadorRespostas = 0;
             document.getElementById('chatHistory').innerHTML = '';
             document.getElementById('chatSection').style.display = 'none';
             document.getElementById('userPrompt').value = '';
@@ -641,6 +638,8 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
             authorDiv.appendChild(authorTitle);
 
             if (classe === 'msg-gemini' && !isError) {
+                contadorRespostas++;
+                const numResp = contadorRespostas;
                 const btnDl = document.createElement('button');
                 btnDl.type = 'button';
                 btnDl.className = 'btn-tag';
@@ -648,7 +647,7 @@ REGRAS DE RESPOSTA E ANALISE DE DOCUMENTOS:
                 btnDl.style.fontSize = '11px';
                 btnDl.textContent = 'Descarregar';
                 btnDl.title = 'Descarregar resposta para Bloco de Notas';
-                btnDl.onclick = () => descarregarParaBlocoDeNotas(texto, 'resposta_gemini.txt');
+                btnDl.onclick = () => descarregarParaBlocoDeNotas(`r${numResp}:\r\n${texto.trim()}`, `r${numResp}.txt`);
                 authorDiv.appendChild(btnDl);
             }
 
