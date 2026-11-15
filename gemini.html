@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente Gemini - WSP27</title>
+    <style>
+        body { font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 20px auto; padding: 0 15px; background: #f4f6f9; color: #333; }
+        .card { padding: 20px; margin-bottom: 20px; border-left: 5px solid #0056b3; border-radius: 8px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        .card.gemini-card { border-left-color: #0d6efd; }
+        h1, h2, h3 { color: #0056b3; margin-top: 0; }
+        .gemini-title { color: #0d6efd; }
+        .back { display: inline-block; margin-bottom: 20px; padding: 8px 15px; border-radius: 5px; background: #0056b3; color: #fff; text-decoration: none; font-weight: bold; }
+        .back:hover { background: #004085; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; }
+        input[type="text"], input[type="password"], select, textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+        .row-flex { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+        .row-flex input { flex: 1; min-width: 200px; }
+        button { padding: 8px 15px; border: 0; border-radius: 5px; background: #28a745; color: #fff; cursor: pointer; font-weight: bold; transition: background .15s; }
+        button:hover { background: #218838; }
+        button.btn-blue { background: #0d6efd; }
+        button.btn-blue:hover { background: #0b5ed7; }
+        button.btn-secondary { background: #6c757d; }
+        button.btn-secondary:hover { background: #5c636a; }
+        button.btn-tag { background: #eef1f5; color: #0d6efd; border: 1px solid #cfe2ff; font-size: 12.5px; padding: 5px 10px; font-weight: 600; }
+        button.btn-tag:hover { background: #0d6efd; color: #fff; }
+        .quick-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 15px 0; }
+        .notice { padding: 12px 15px; border-left: 4px solid #0d6efd; background: #e7f1ff; border-radius: 4px; margin-bottom: 15px; font-size: 14px; color: #084298; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-success { background: #d1e7dd; color: #0f5132; }
+        .badge-warning { background: #fff3cd; color: #664d03; }
+        pre { margin-top: 0; padding: 15px; overflow-x: auto; border-radius: 0 0 6px 6px; background: #1e1e1e; color: #d4d4d4; font: 13px/1.5 Consolas, monospace; white-space: pre-wrap; word-break: break-word; }
+        .code-box { margin: 15px 0; border-radius: 6px; overflow: hidden; border: 1px solid #2d2d2d; }
+        .code-bar { display: flex; justify-content: space-between; align-items: center; background: #2d2d2d; padding: 6px 12px; color: #aaa; font: 12px Consolas, monospace; }
+        .code-bar button { padding: 4px 10px; font-size: 12px; background: #198754; }
+        .code-bar button:hover { background: #157347; }
+        code { padding: 2px 6px; border-radius: 4px; background: #eef1f5; color: #d63384; font-family: Consolas, monospace; }
+        .chat-history { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .msg { padding: 15px; border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .msg-user { background: #e7f1ff; border: 1px solid #b6d4fe; align-self: flex-end; width: 95%; }
+        .msg-gemini { background: #fff; border: 1px solid #dee2e6; width: 100%; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+        .msg-author { font-weight: bold; font-size: 13px; margin-bottom: 6px; color: #0056b3; }
+        .loading { display: none; padding: 12px; font-weight: bold; color: #0d6efd; }
+        .loading.active { display: block; }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">Voltar ao Menu Principal</a>
+    <h1 class="gemini-title">Assistente Gemini - CyberSecurity &amp; Hardening</h1>
+
+    <!-- 1. CONFIGURAÇÃO DA CHAVE -->
+    <section class="card gemini-card">
+        <h2>1. Configuracao da Chave da API Gemini</h2>
+        <div class="notice">
+            A chave e armazenada de forma segura unicamente no seu browser (localStorage) e utilizada para enviar os seus pedidos diretamente para a API oficial do Google Gemini.<br>
+            Pode obter uma chave gratuita no <strong>Google AI Studio</strong>:
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #084298; font-weight: bold;">Obter Chave API Gratuita</a>
+        </div>
+
+        <label for="apiKey">Gemini API Key:</label>
+        <div class="row-flex">
+            <input type="password" id="apiKey" placeholder="Cole aqui a sua API Key (ex: AIzaSy...)">
+            <button type="button" class="btn-secondary" onclick="alternarVisibilidade()">Mostrar/Ocultar</button>
+            <button type="button" onclick="salvarChave()">Guardar Chave</button>
+            <button type="button" class="btn-secondary" onclick="limparChave()">Remover</button>
+        </div>
+
+        <div class="row-flex" style="margin-bottom: 0;">
+            <div style="flex: 1; min-width: 220px;">
+                <label for="modelSelect">Modelo:</label>
+                <select id="modelSelect">
+                    <option value="gemini-2.5-flash" selected>gemini-2.5-flash (Mais rapido e recomendado)</option>
+                    <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                    <option value="gemini-1.5-pro">gemini-1.5-pro (Raciocinio aprofundado)</option>
+                </select>
+            </div>
+            <div style="padding-top: 25px;">
+                <span id="keyBadge" class="badge badge-warning">Nenhuma chave configurada</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. PROMPT / ENTRADA DE PEDIDOS -->
+    <section class="card gemini-card">
+        <h2>2. O que pretende realizar?</h2>
+        <p>Peca ao Gemini qualquer script, configuracao de servico, comando de terminal, resolucao de problemas ou analise forense:</p>
+
+        <label>Exemplos rapidos para teste:</label>
+        <div class="quick-tags">
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Cria um script PowerShell completo para inventario forense no Windows que exporte servicos instalados, administradores locais, portas ativas e logs de login falhados (4625).')">Inventario Forense PowerShell</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Como faco hardening rigoroso do SSH no Linux (/etc/ssh/sshd_config)? Apresenta os comandos exatos para desativar root, limitar utilizadores e validar a sintaxe.')">Hardening SSH Linux</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Explica passo a passo como configurar uma GPO no Active Directory para proibir o uso de portas USB de armazenamento.')">GPO Bloqueio de USB</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Gera uma configuracao completa do Samba (/etc/samba/smb.conf) com pasta public (leitura para todos) e private (leitura e escrita apenas para Jane e John).')">Samba smb.conf Seguro</button>
+            <button type="button" class="btn-tag" onclick="preencherPrompt('Escreve um script Bash para auditar todas as portas em escuta, conexoes ativas e utilizadores com shell /bin/bash no Linux.')">Auditoria de Portas Bash</button>
+        </div>
+
+        <label for="userPrompt">Instrucao / Pergunta:</label>
+        <textarea id="userPrompt" placeholder="Escreva aqui tudo o que precisa. Exemplo: Cria uma regra de firewall iptables para bloquear conexoes na porta 22 exceto a partir do IP 192.168.1.50..."></textarea>
+
+        <div style="display: flex; gap: 10px; margin-top: 12px;">
+            <button type="button" class="btn-blue" id="btnSend" onclick="enviarPedido()">Executar Pedido</button>
+            <button type="button" class="btn-secondary" onclick="limparHistorico()">Limpar Conversa</button>
+        </div>
+
+        <div id="loadingStatus" class="loading">O Gemini esta a processar o seu pedido... Por favor aguarde.</div>
+    </section>
+
+    <!-- 3. HISTÓRICO / RESPOSTAS -->
+    <section class="card gemini-card" id="chatSection" style="display: none;">
+        <h2>3. Resultados e Respostas</h2>
+        <div id="chatHistory" class="chat-history"></div>
+    </section>
+
+    <script>
+        const KEY_STORAGE = 'wsp27_gemini_key';
+        let historicoConversa = [];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const guardada = localStorage.getItem(KEY_STORAGE);
+            if (guardada) {
+                document.getElementById('apiKey').value = guardada;
+                atualizarBadge(true);
+            } else {
+                atualizarBadge(false);
+            }
+        });
+
+        function atualizarBadge(ativa) {
+            const b = document.getElementById('keyBadge');
+            if (ativa) {
+                b.className = 'badge badge-success';
+                b.textContent = 'Chave pronta para uso';
+            } else {
+                b.className = 'badge badge-warning';
+                b.textContent = 'Nenhuma chave configurada';
+            }
+        }
+
+        function salvarChave() {
+            const chave = document.getElementById('apiKey').value.trim();
+            if (!chave) {
+                alert('Insira uma chave valida antes de salvar.');
+                return;
+            }
+            localStorage.setItem(KEY_STORAGE, chave);
+            atualizarBadge(true);
+            alert('Chave guardada com sucesso no seu navegador.');
+        }
+
+        function limparChave() {
+            localStorage.removeItem(KEY_STORAGE);
+            document.getElementById('apiKey').value = '';
+            atualizarBadge(false);
+            alert('Chave removida.');
+        }
+
+        function alternarVisibilidade() {
+            const input = document.getElementById('apiKey');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function preencherPrompt(txt) {
+            const area = document.getElementById('userPrompt');
+            area.value = txt;
+            area.focus();
+        }
+
+        function limparHistorico() {
+            historicoConversa = [];
+            document.getElementById('chatHistory').innerHTML = '';
+            document.getElementById('chatSection').style.display = 'none';
+            document.getElementById('userPrompt').value = '';
+        }
+
+        async function enviarPedido() {
+            const chave = document.getElementById('apiKey').value.trim() || localStorage.getItem(KEY_STORAGE);
+            const prompt = document.getElementById('userPrompt').value.trim();
+            const modelo = document.getElementById('modelSelect').value;
+
+            if (!chave) {
+                alert('Atencao: Defina primeiro a sua Gemini API Key no painel superior.');
+                document.getElementById('apiKey').focus();
+                return;
+            }
+
+            if (!prompt) {
+                alert('Escreva uma instrucao ou escolha um dos atalhos rapidos.');
+                document.getElementById('userPrompt').focus();
+                return;
+            }
+
+            const btn = document.getElementById('btnSend');
+            const loader = document.getElementById('loadingStatus');
+            const chatSection = document.getElementById('chatSection');
+            const chatHistory = document.getElementById('chatHistory');
+
+            btn.disabled = true;
+            loader.className = 'loading active';
+            chatSection.style.display = 'block';
+
+            // Adicionar mensagem do utilizador
+            adicionarMensagem('Voce', prompt, 'msg-user');
+            document.getElementById('userPrompt').value = '';
+
+            // Preparar estrutura para a API
+            historicoConversa.push({
+                role: 'user',
+                parts: [{ text: prompt }]
+            });
+
+            const systemInstruction = {
+                parts: [{
+                    text: "Voce e um assistente especialista em CyberSecurity, Hardening de Sistemas Operativos (Windows e Linux), Redes, Forense e Administracao de Sistemas para a WorldSkills Portugal. Realize rigorosamente tudo o que o utilizador pedir com respostas detalhadas, comandos funcionais prontos a executar, configuracoes exatas e explicacoes tecnicas precisas. Nunca utilize emojis nas suas respostas."
+                }]
+            };
+
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${chave}`;
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: historicoConversa,
+                        systemInstruction: systemInstruction
+                    })
+                });
+
+                if (!res.ok) {
+                    const erroJson = await res.json().catch(() => ({}));
+                    const mensagem = erroJson.error && erroJson.error.message ? erroJson.error.message : res.statusText;
+                    throw new Error(`Erro ${res.status}: ${mensagem}`);
+                }
+
+                const data = await res.json();
+                const textoResposta = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Nenhuma resposta retornada.';
+
+                // Adicionar ao historico
+                historicoConversa.push({
+                    role: 'model',
+                    parts: [{ text: textoResposta }]
+                });
+
+                adicionarMensagem('Gemini', textoResposta, 'msg-gemini');
+            } catch (err) {
+                adicionarMensagem('Erro', err.message, 'msg-gemini', true);
+            } finally {
+                btn.disabled = false;
+                loader.className = 'loading';
+            }
+        }
+
+        function adicionarMensagem(autor, texto, classe, isError = false) {
+            const container = document.getElementById('chatHistory');
+            const cardMsg = document.createElement('div');
+            cardMsg.className = `msg ${classe}`;
+
+            const authorDiv = document.createElement('div');
+            authorDiv.className = 'msg-author';
+            authorDiv.textContent = autor;
+            cardMsg.appendChild(authorDiv);
+
+            if (isError) {
+                const errDiv = document.createElement('div');
+                errDiv.style.color = '#dc3545';
+                errDiv.style.fontWeight = 'bold';
+                errDiv.textContent = texto;
+                cardMsg.appendChild(errDiv);
+            } else if (classe === 'msg-user') {
+                const p = document.createElement('p');
+                p.style.margin = '0';
+                p.textContent = texto;
+                cardMsg.appendChild(p);
+            } else {
+                formatarRespostaGemini(cardMsg, texto);
+            }
+
+            container.appendChild(cardMsg);
+            cardMsg.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function formatarRespostaGemini(container, texto) {
+            // Dividir blocos de codigo ```linguagem ... ```
+            const regex = /```([a-zA-Z0-9_\-\.]*)\n([\s\S]*?)```/g;
+            let ultimoIndice = 0;
+            let match;
+
+            while ((match = regex.exec(texto)) !== null) {
+                const textoAnterior = texto.substring(ultimoIndice, match.index);
+                if (textoAnterior.trim()) {
+                    container.appendChild(criarParagrafos(textoAnterior));
+                }
+
+                const lang = match[1] || 'CODIGO';
+                const codigo = match[2];
+
+                container.appendChild(criarBlocoCodigo(lang, codigo));
+                ultimoIndice = match.index + match[0].length;
+            }
+
+            const resto = texto.substring(ultimoIndice);
+            if (resto.trim()) {
+                container.appendChild(criarParagrafos(resto));
+            }
+        }
+
+        function criarParagrafos(str) {
+            const wrapper = document.createElement('div');
+            const linhas = str.split('\n');
+            let html = '';
+
+            for (let l of linhas) {
+                let s = escapeHtml(l);
+                if (s.startsWith('### ')) {
+                    html += `<h3 style="margin: 12px 0 6px 0; color: #0056b3;">${s.substring(4)}</h3>`;
+                } else if (s.startsWith('## ')) {
+                    html += `<h2 style="margin: 16px 0 8px 0; color: #0056b3; font-size: 18px;">${s.substring(3)}</h2>`;
+                } else if (s.startsWith('# ')) {
+                    html += `<h1 style="margin: 20px 0 10px 0; color: #0056b3; font-size: 20px;">${s.substring(2)}</h1>`;
+                } else if (s.startsWith('* ') || s.startsWith('- ')) {
+                    html += `<div style="margin-left: 15px; margin-bottom: 4px;">&bull; ${s.substring(2)}</div>`;
+                } else if (s.trim() === '') {
+                    html += '<div style="height: 6px;"></div>';
+                } else {
+                    // Inline code
+                    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+                    html += `<p style="margin: 0 0 6px 0;">${s}</p>`;
+                }
+            }
+            wrapper.innerHTML = html;
+            return wrapper;
+        }
+
+        function criarBlocoCodigo(lang, codigo) {
+            const wrap = document.createElement('div');
+            wrap.className = 'code-box';
+
+            const bar = document.createElement('div');
+            bar.className = 'code-bar';
+            bar.innerHTML = `<span>${escapeHtml(lang.toUpperCase())}</span>`;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = 'Copiar';
+            btn.onclick = async () => {
+                await navigator.clipboard.writeText(codigo);
+                const prev = btn.textContent;
+                btn.textContent = 'Copiado';
+                setTimeout(() => { btn.textContent = prev; }, 1200);
+            };
+
+            bar.appendChild(btn);
+
+            const pre = document.createElement('pre');
+            pre.textContent = codigo;
+
+            wrap.appendChild(bar);
+            wrap.appendChild(pre);
+            return wrap;
+        }
+
+        function escapeHtml(text) {
+            const d = document.createElement('div');
+            d.innerText = text;
+            return d.innerHTML;
+        }
+    </script>
+</body>
+</html>
